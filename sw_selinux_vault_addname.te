@@ -1,0 +1,11 @@
+module sw_selinux_vault_addname 1.0;
+
+require {
+        type unlabeled_t;
+        type init_t;
+        class dir add_name;
+}
+
+#============= init_t ==============
+allow init_t unlabeled_t:dir add_name;
+

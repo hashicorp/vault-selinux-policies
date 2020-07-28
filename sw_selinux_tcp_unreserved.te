@@ -1,0 +1,12 @@
+policy_module(sw_selinux_tcp_unreserved, 1.0)
+
+ 
+
+require {
+        type init_t;
+}
+
+ 
+
+#============= init_t ==============
+corenet_tcp_connect_unreserved_ports(init_t)

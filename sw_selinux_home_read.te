@@ -1,0 +1,11 @@
+module sw_selinux_home_read 1.0;
+
+require {
+        type init_t;
+        type user_home_t;
+        class file { open read };
+}
+
+#============= init_t ==============
+allow init_t user_home_t:file { open read };
+

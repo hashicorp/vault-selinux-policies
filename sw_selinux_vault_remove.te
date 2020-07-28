@@ -1,0 +1,11 @@
+module sw_selinux_vault_remove 1.0;
+
+require {
+        type init_t;
+        type unlabeled_t;
+        class dir remove_name;
+}
+
+#============= init_t ==============
+allow init_t unlabeled_t:dir remove_name;
+
