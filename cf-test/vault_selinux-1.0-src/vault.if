@@ -1,0 +1,40 @@
+
+## <summary>policy for vault</summary>
+
+########################################
+## <summary>
+##	Execute vault_exec_t in the vault domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`vault_domtrans',`
+	gen_require(`
+		type vault_t, vault_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, vault_exec_t, vault_t)
+')
+
+######################################
+## <summary>
+##	Execute vault in the caller domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`vault_exec',`
+	gen_require(`
+		type vault_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	can_exec($1, vault_exec_t)
+')

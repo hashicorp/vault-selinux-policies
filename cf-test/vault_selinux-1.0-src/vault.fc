@@ -1,0 +1,4 @@
+/usr/sbin/vault		--	gen_context(system_u:object_r:vault_exec_t,s0)
+/opt/vault(/.*)?		gen_context(system_u:object_r:vault_sys_content_t,s0)
+/etc/vault.d(/.*)?		gen_context(system_u:object_r:vault_conf_t,s0)
+/var/log/vault(/.*)?		gen_context(system_u:object_r:vault_log_t,s0)

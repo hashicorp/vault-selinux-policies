@@ -1,0 +1,118 @@
+policy_module(vault, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+
+type vault_t;
+
+# Mapped to the /usr/sbin/vault binary/process
+type vault_exec_t;
+
+## init_daemon_domain
+###  Create a domain for long running processes
+###  (daemons/services) which are started by init scripts.
+init_daemon_domain(vault_t, vault_exec_t)
+
+# Mapped to the /etc/vault.d folder
+type vault_conf_t;
+files_type(vault_conf_t)
+
+# Mapped to the /opt/vault folder
+type vault_sys_content_t;
+files_type(vault_sys_content_t)
+
+# Mapped to the /var/log/vault folder
+type vault_log_t;
+files_type(vault_log_t)
+
+# If you uncomment the below - this changes enforcement to permissive
+# i.e. selinux will audit but not block
+#permissive vault_t;
+
+########################################
+#
+# vault local policy
+#
+
+require {
+	type vault_t;
+	type vault_conf_t;
+	type vault_sys_content_t;
+	type vault_log_t;
+	class netlink_route_socket { bind create getattr nlmsg_read read write };
+	class tcp_socket { accept bind create getattr listen setopt read write };
+	class unix_dgram_socket { bind create getattr setopt };
+	class file { create getattr lock open read write };
+	class dir { add_name create getattr open read write search };
+}
+
+# read-write file permissions on anonymous pipes
+allow vault_t self:fifo_file rw_fifo_file_perms;
+
+# We now need to be able to create socket permissions in itself
+allow vault_t self:unix_stream_socket create_stream_socket_perms;
+# and network sockets too
+allow vault_t self:netlink_route_socket { bind create getattr nlmsg_read };
+allow vault_t self:unix_dgram_socket { bind create getattr setopt };
+allow vault_t self:tcp_socket { accept bind create getattr listen setopt read write };
+
+# Allow binding to ports
+corenet_tcp_bind_generic_node(vault_t)
+# trivnet1 is configured as 8200 - hence we need to allow binding to trivnet1
+corenet_tcp_bind_trivnet1_port(vault_t)
+# unreserved allowes for 8201 - which isn't configured like 8200
+corenet_tcp_bind_unreserved_ports(vault_t)
+kernel_read_net_sysctls(vault_t)
+kernel_search_network_sysctl(vault_t)
+
+#!!!! This avc has a dontaudit rule in the current policy
+allow vault_t self:netlink_route_socket { read write };
+
+## domain_use_interactive_fds
+###  Inherit and use file descriptors from
+###  domains with interactive programs.
+domain_use_interactive_fds(vault_t)
+
+#xntrik - don't think this is needed
+#files_read_etc_files(vault_t)
+
+## miscfiles_read_localization
+###  Allow process to read localization information.
+miscfiles_read_localization(vault_t)
+
+## init_nnp_daemon_domain
+###  Allow SELinux Domain trasition from sytemd
+###  into confined domain with NoNewPrivileges
+###  Systemd Security feature.
+init_nnp_daemon_domain(vault_t)
+
+
+# Need to access conf files
+allow vault_t vault_conf_t:file { getattr open read };
+allow vault_t vault_conf_t:dir search;
+
+## auth_read_passwd
+###  Read the passwd passwords file (/etc/passwd)
+###  Allow to use sss nsswitch module for passwd and group.
+###  Allow to use systemd nsswitch module for passwd and group
+###  which is used for dynamic users.
+auth_read_passwd(vault_t)
+
+# Warning: corecmd_exec_ls() has been deprecated, please use corecmd_exec_bin() instead.
+#corecmd_exec_ls(vault_t)
+corecmd_exec_bin(vault_t)
+
+## kernel_read_sys
+###  Allows caller to read system state information in /proc.
+kernel_read_system_state(vault_t)
+
+
+# Need to access data files
+allow vault_t vault_sys_content_t:dir { add_name create getattr open read write search };
+allow vault_t vault_sys_content_t:file { create getattr lock open read write };
+
+# Need to access log files
+allow vault_t vault_log_t:dir { getattr search write add_name };
+allow vault_t vault_log_t:file { create append open setattr };
