@@ -77,3 +77,9 @@ If you update the fc, if or te files, you can then run `sh ./vault.sh` to re-dep
 If you want to then dynamically update the te file with changes detected in the logs you can run `sh ./vault.sh --update`
 
 If you want to remove the policy then you can run a `sudo semodule -r vault`
+
+# Updating the rpm
+
+You'll need to shift the `vault_selinux-1.1-src` onto a Centos instance with the sepolicy pre-requisites (if you `make up` in the `terraform` folder that's what you get).
+
+After you `sudo sh ./vault.sh` it will install the policy, plus, it will create a folder called `noarch` - and the RPM file will be in there. Any time you make changes to the `vault.te` file (or other sepolicy files), and re-run `sudo sh ./vault.sh` it will generate a new RPM file.
