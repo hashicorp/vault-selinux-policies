@@ -1,4 +1,4 @@
-policy_module(vault, 1.0.0)
+policy_module(vault, 1.1)
 
 ########################################
 #
@@ -42,7 +42,7 @@ require {
 	type vault_sys_content_t;
 	type vault_log_t;
 	class netlink_route_socket { bind create getattr nlmsg_read read write };
-	class tcp_socket { accept bind create getattr listen setopt read write };
+	class tcp_socket { accept bind connect create getattr getopt listen setopt read write };
 	class unix_dgram_socket { bind create getattr setopt };
 	class file { create getattr lock open read write };
 	class dir { add_name create getattr open read write search };
@@ -57,13 +57,19 @@ allow vault_t self:unix_stream_socket create_stream_socket_perms;
 allow vault_t self:netlink_route_socket { bind create getattr nlmsg_read };
 allow vault_t self:unix_dgram_socket { bind create getattr setopt };
 allow vault_t self:tcp_socket { accept bind create getattr listen setopt read write };
+# allow outbound network connectivity (for node to node comms)
+allow vault_t self:tcp_socket { connect getopt };
 
 # Allow binding to ports
 corenet_tcp_bind_generic_node(vault_t)
 # trivnet1 is configured as 8200 - hence we need to allow binding to trivnet1
 corenet_tcp_bind_trivnet1_port(vault_t)
+# and allowing connecting to it too
+corenet_tcp_connect_trivnet1_port(vault_t)
 # unreserved allowes for 8201 - which isn't configured like 8200
 corenet_tcp_bind_unreserved_ports(vault_t)
+# and connect to them too
+corenet_tcp_connect_unreserved_ports(vault_t)
 kernel_read_net_sysctls(vault_t)
 kernel_search_network_sysctl(vault_t)
 

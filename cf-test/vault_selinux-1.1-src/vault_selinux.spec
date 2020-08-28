@@ -10,12 +10,12 @@ restorecon -R /var/log/vault; \
 %define selinux_policyver 3.13.1-266
 
 Name:   vault_selinux
-Version:	1.0
+Version:	1.1
 Release:	1%{?dist}
 Summary:	SELinux policy module for vault
 
 Group:	System Environment/Base		
-License:	GPLv2+	
+License:	MPLv2
 # This is an example. You will need to change it.
 URL:		https://www.vaultproject.io/
 Source0:	vault.pp
@@ -68,6 +68,9 @@ exit 0
 
 
 %changelog
+* Fri Aug 28 2020 Christian Frichot <cfrichot@hashicorp.com> 1.1-1
+- Update to allow for outbound comms
+
 * Wed Aug 12 2020 Christian Frichot <cfrichot@hashicorp.com> 1.0-1
 - Initial version
 

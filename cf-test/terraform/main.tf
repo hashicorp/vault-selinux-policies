@@ -149,6 +149,15 @@ resource "aws_security_group_rule" "allow_api_inbound_from_self" {
   security_group_id = aws_security_group.ssh.id
 }
 
+resource "aws_security_group_rule" "allow_cluser_inbound_from_self" {
+  type = "ingress"
+  from_port = "8201"
+  to_port = "8201"
+  protocol = "tcp"
+  self = true
+  security_group_id = aws_security_group.ssh.id
+}
+
 resource "aws_security_group_rule" "allow_http_inbound_from_self" {
   type = "ingress"
   from_port = "80"
