@@ -2,10 +2,10 @@
 
 
 %define relabel_files() \
-restorecon -R /usr/bin/vault; \
-restorecon -R /etc/vault.d; \
-restorecon -R /opt/vault; \
-restorecon -R /var/log/vault; \
+restorecon -R -F -v -i /usr/bin/vault; \
+restorecon -R -F -v -i /etc/vault.d; \
+restorecon -R -F -v -i /opt/vault; \
+restorecon -R -F -v -i /var/log/vault; \
 
 %define selinux_policyver 3.13.1-266
 
