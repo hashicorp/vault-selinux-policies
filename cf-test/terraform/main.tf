@@ -117,6 +117,24 @@ data "aws_ami" "centos" {
   }
 }
 
+# @xntrik - couldn't get the below to work
+# data "aws_ami" "fedora" {
+#   owners = ["125523088429"]
+#   most_recent = true
+#   filter {
+#     name = "root-device-type"
+#     values = ["ebs"]
+#   }
+#   filter {
+#     name = "architecture"
+#     values = ["x86-64"]
+#   }
+#   filter {
+#     name = "name"
+#     values = ["Fedora-Cloud-Base-32-*"]
+#   }
+# }
+
 resource "aws_security_group" "ssh" {
   name = "${var.name} sg"
   vpc_id = aws_vpc.vpc.id
@@ -172,12 +190,13 @@ data "template_file" "user_data" {
 }
 
 resource "aws_instance" "instance" {
-  ami = data.aws_ami.centos.id
+  # ami = data.aws_ami.fedora.id
+  ami = "ami-09f17ac4a76fd9ffe"
   instance_type = "t2.medium"
   key_name = aws_key_pair.ssh.key_name
   subnet_id = aws_subnet.public.id
   vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
-  user_data = data.template_file.user_data.rendered
+  # user_data = data.template_file.user_data.rendered
 }
 
 # resource "aws_instance" "instance2" {
