@@ -1,4 +1,4 @@
-policy_module(vault, 1.1)
+policy_module(vault, #VERSION#)
 
 ########################################
 #
@@ -7,7 +7,7 @@ policy_module(vault, 1.1)
 
 type vault_t;
 
-# Mapped to the /usr/sbin/vault binary/process
+# Mapped to the /usr/bin/vault binary/process
 type vault_exec_t;
 
 ## init_daemon_domain

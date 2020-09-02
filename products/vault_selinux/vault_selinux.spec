@@ -2,7 +2,7 @@
 
 
 %define relabel_files() \
-restorecon -R /usr/sbin/vault; \
+restorecon -R /usr/bin/vault; \
 restorecon -R /etc/vault.d; \
 restorecon -R /opt/vault; \
 restorecon -R /var/log/vault; \
@@ -10,7 +10,7 @@ restorecon -R /var/log/vault; \
 %define selinux_policyver 3.13.1-266
 
 Name:   vault_selinux
-Version:	1.1
+Version:	#VERSION#
 Release:	1%{?dist}
 Summary:	SELinux policy module for vault
 
@@ -68,9 +68,12 @@ exit 0
 
 
 %changelog
-* Fri Aug 28 2020 Christian Frichot <cfrichot@hashicorp.com> 1.1-1
+* Wed Sep 2 2020 Christian Frichot <cfrichot@hashicorp.com> 0.1.2-1
+- Update for Hashicorp RPM Vault install
+
+* Fri Aug 28 2020 Christian Frichot <cfrichot@hashicorp.com> 0.1.1-1
 - Update to allow for outbound comms
 
-* Wed Aug 12 2020 Christian Frichot <cfrichot@hashicorp.com> 1.0-1
+* Wed Aug 12 2020 Christian Frichot <cfrichot@hashicorp.com> 0.1.0-1
 - Initial version
 

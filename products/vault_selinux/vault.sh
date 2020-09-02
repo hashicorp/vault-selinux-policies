@@ -45,7 +45,7 @@ make -f /usr/share/selinux/devel/Makefile vault.pp || exit
 # Generate a man page off the installed module
 sepolicy manpage -p . -d vault_t
 # Fixing the file context on /usr/sbin/vault
-/sbin/restorecon -F -R -v /usr/sbin/vault
+/sbin/restorecon -F -R -v /usr/bin/vault
 # Fixing the file context on /var/log/vault
 /sbin/restorecon -F -R -v /var/log/vault
 # Fixing the file context on /opt/vault
