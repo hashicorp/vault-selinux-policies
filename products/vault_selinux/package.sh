@@ -7,17 +7,40 @@ PACKAGE_ITERATION=${HC_PACKAGE_ITERATION:-1}
 # Name enterprise package consul-enterprise
 PRODUCT_NAME="vault_selinux"
 
-# Constants
+# Check for CentOS or Fedora
 
-# Install Vault RPM
-echo "dnf installing Vault"
-sudo dnf install -y dnf-plugins-core
-sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
-sudo dnf -y install vault
+if [ -f /etc/os-release ]; then
+  . /etc/os-release
+  OS=$NAME
+fi
 
-# Install other deps
-echo "dnf installing other stuff"
-sudo dnf -y install policycoreutils-devel setools-console rpm-build
+if [[ $OS == *"CentOS"* ]]; then
+  echo "Detected CentOS"
+
+  # Install Vault RPM
+  echo "yum installing Vault"
+  sudo yum install -y yum-utils
+  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  sudo yum -y install vault
+
+  # Install other deps
+  echo "yum installing other stuff"
+  sudo yum -y install policycoreutils-devel setools-console rpm-build
+
+elif [[ $OS == *"Fedora"* ]]; then
+  echo "Detected Fedora"
+
+  # Install Vault RPM
+  echo "dnf installing Vault"
+  sudo dnf install -y dnf-plugins-core
+  sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+  sudo dnf -y install vault
+
+  # Install other deps
+  echo "dnf installing other stuff"
+  sudo dnf -y install policycoreutils-devel setools-console rpm-build
+
+fi
 
 OUTPUT_PATH=$(pwd)
 # Create temporary workspace
