@@ -39,9 +39,14 @@ jobs:
       - checkout
       - when:
           condition:
-            equal: [ <<parameters.host-image >>, *FEDORA_DOCKER_IMAGE ]
+            equal: [ << parameters.host-image >>, *FEDORA_DOCKER_IMAGE ]
           steps:
-            - run: sudo dnf -y install make
+            - run: dnf -y install make
+      - when:
+        condition:
+          equal: [ << parameters.host-image >>, *CENTOS_DOCKER_IMAGE ]
+        steps:
+          - run: yum -y install make
       - run:
           name: Create linux packages
           command: make package
