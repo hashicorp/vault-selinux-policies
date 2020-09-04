@@ -106,3 +106,4 @@ I did a _lot_ of googling to get my head around this, and realize I have a bunch
 * Troubleshooting selinux problems https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/using_selinux/troubleshooting-problems-related-to-selinux_using-selinux
 * Linux restorecon command examples https://www.thegeekstuff.com/2017/05/restorecon-examples/
 * Walk through of the INN policy https://www.linuxtopia.org/online_books/writing_SELinux_policy_guide/case_study_13.html 
+
