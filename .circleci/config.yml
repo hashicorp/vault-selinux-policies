@@ -37,9 +37,11 @@ jobs:
       <<: *ENVIRONMENT
     steps:
       - checkout
-      - run:
-          name: Install make
-          command: sudo dnf -y install make
+      - when:
+          condition:
+            equal: [ <<parameters.host-image >>, *FEDORA_DOCKER_IMAGE ]
+          steps:
+            - run: sudo dnf -y install make
       - run:
           name: Create linux packages
           command: make package

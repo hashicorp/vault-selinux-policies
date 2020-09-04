@@ -19,26 +19,26 @@ if [[ $OS == *"CentOS"* ]]; then
 
   # Install Vault RPM
   echo "yum installing Vault"
-  sudo yum install -y yum-utils
-  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-  sudo yum -y install vault
+  yum install -y yum-utils
+  yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  yum -y install vault
 
   # Install other deps
   echo "yum installing other stuff"
-  sudo yum -y install policycoreutils-devel setools-console rpm-build
+  yum -y install policycoreutils-devel setools-console rpm-build
 
 elif [[ $OS == *"Fedora"* ]]; then
   echo "Detected Fedora"
 
   # Install Vault RPM
   echo "dnf installing Vault"
-  sudo dnf install -y dnf-plugins-core
-  sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
-  sudo dnf -y install vault
+  dnf install -y dnf-plugins-core
+  dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+  dnf -y install vault
 
   # Install other deps
   echo "dnf installing other stuff"
-  sudo dnf -y install policycoreutils-devel setools-console rpm-build
+   dnf -y install policycoreutils-devel setools-console rpm-build
 
 fi
 
@@ -61,7 +61,7 @@ sed -i "s^#VERSION#^${HC_VERSION}^g" vault.te
 sed -i "s^#VERSION#^${HC_VERSION}^g" vault_selinux.spec
 
 # Run the sepolicy builder
-sudo sh ./vault.sh
+sh ./vault.sh
 cp *.rpm $OUTPUT_PATH
 cp noarch/*.rpm $OUTPUT_PATH
 
