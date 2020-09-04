@@ -4,10 +4,10 @@ version: 2.1
 parameters:
   hc-product:
     type: string
-    default: "dummy"
+    default: "vault_selinux"
   hc-version:
     type: string
-    default: "0.0.1"
+    default: "0.1.1"
   hc-package-iteration:
     type: string
     default: "1"
