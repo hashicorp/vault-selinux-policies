@@ -62,8 +62,8 @@ sed -i "s^#VERSION#^${HC_VERSION}^g" vault_selinux.spec
 
 # Run the sepolicy builder
 sudo sh ./vault.sh
-mv *.rpm $OUTPUT_PATH
-mv noarch/*.rpm $OUTPUT_PATH
+cp *.rpm $OUTPUT_PATH
+cp noarch/*.rpm $OUTPUT_PATH
 
 # Cleanup
 cd $OUTPUT_PATH

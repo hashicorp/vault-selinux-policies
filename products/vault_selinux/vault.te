@@ -88,6 +88,16 @@ domain_use_interactive_fds(vault_t)
 ###  Allow process to read localization information.
 miscfiles_read_localization(vault_t)
 
+## dev_read_sysfs
+###  Allow the specified domain to read the contents of
+###  the sysfs filesystem.  This filesystem contains
+###  information, parameters, and other settings on the
+###  hardware installed on the system.
+##
+## This was needed for Fedora (but apparently not CentOS)
+## Although Vault seems to function even without the perm
+dev_read_sysfs(vault_t)
+
 ## init_nnp_daemon_domain
 ###  Allow SELinux Domain trasition from sytemd
 ###  into confined domain with NoNewPrivileges
