@@ -39,6 +39,11 @@ jobs:
       - run:
           name: Create linux packages
           command: make package
+      - run:
+          name: Copy rpms to /tmp/circle-artifacts
+          command: mkdir -p /tmp/circle-artifacts && cp products/**/*.rpm /tmp/circle-artifacts
+      - store_artifacts:
+          path: /tmp/circle-artifacts
 
 workflows:
   version: 2
