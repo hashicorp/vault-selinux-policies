@@ -34,6 +34,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install make
+          command: sudo dnf -y install make
+      - run:
           name: Create linux packages
           command: make package
 
