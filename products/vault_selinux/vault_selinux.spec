@@ -6,6 +6,7 @@ restorecon -R -F -v -i /usr/bin/vault; \
 restorecon -R -F -v -i /etc/vault.d; \
 restorecon -R -F -v -i /opt/vault; \
 restorecon -R -F -v -i /var/log/vault; \
+semanage port -a -t vault_cluster_port_t -p tcp 8201; \
 
 Name:   vault_selinux
 Version:	#VERSION#
@@ -50,6 +51,7 @@ exit 0
 
 %postun
 if [ $1 -eq 0 ]; then
+    semanage port -d -p tcp 9876
     semodule -n -r vault
     if /usr/sbin/selinuxenabled ; then
        /usr/sbin/load_policy

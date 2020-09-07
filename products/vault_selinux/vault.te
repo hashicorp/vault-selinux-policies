@@ -27,6 +27,10 @@ files_type(vault_sys_content_t)
 type vault_log_t;
 files_type(vault_log_t)
 
+# Mapped to tcp:8201
+type vault_cluster_port_t;
+corenet_port(vault_cluster_port_t)
+
 # If you uncomment the below - this changes enforcement to permissive
 # i.e. selinux will audit but not block
 #permissive vault_t;
@@ -66,10 +70,15 @@ corenet_tcp_bind_generic_node(vault_t)
 corenet_tcp_bind_trivnet1_port(vault_t)
 # and allowing connecting to it too
 corenet_tcp_connect_trivnet1_port(vault_t)
-# unreserved allowes for 8201 - which isn't configured like 8200
-corenet_tcp_bind_unreserved_ports(vault_t)
-# and connect to them too
-corenet_tcp_connect_unreserved_ports(vault_t)
+# # unreserved allowes for 8201 - which isn't configured like 8200
+# corenet_tcp_bind_unreserved_ports(vault_t)
+# # and connect to them too
+# corenet_tcp_connect_unreserved_ports(vault_t)
+#
+# We've added the vault_cluster_port_t and package tasks should run the following to label
+# $ semanage port -a -t vault_cluster_port_t -p tcp 8201
+allow vault_t vault_cluster_port_t:tcp_socket { name_bind name_connect };
+
 kernel_read_net_sysctls(vault_t)
 kernel_search_network_sysctl(vault_t)
 

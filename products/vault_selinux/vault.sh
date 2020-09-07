@@ -52,6 +52,8 @@ sepolicy manpage -p . -d vault_t
 /sbin/restorecon -F -R -v /opt/vault
 # Fixing the file context on /etc/vault.d
 /sbin/restorecon -F -R -v /etc/vault.d
+# Labeling 8201
+/sbin/semanage port -a -t vault_cluster_port_t -p tcp 8201
 # Generate a rpm package for the newly generated policy
 
 pwd=$(pwd)
