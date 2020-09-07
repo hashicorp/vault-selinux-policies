@@ -7,8 +7,6 @@ restorecon -R -F -v -i /etc/vault.d; \
 restorecon -R -F -v -i /opt/vault; \
 restorecon -R -F -v -i /var/log/vault; \
 
-%define selinux_policyver 3.13.1-266
-
 Name:   vault_selinux
 Version:	#VERSION#
 Release:	1%{?dist}
@@ -24,7 +22,7 @@ Source2:	vault_selinux.8
 
 
 Requires: policycoreutils, libselinux-utils
-Requires(post): selinux-policy-base >= %{selinux_policyver}, policycoreutils
+Requires(post): selinux-policy-base, policycoreutils
 Requires(postun): policycoreutils
 BuildArch: noarch
 
