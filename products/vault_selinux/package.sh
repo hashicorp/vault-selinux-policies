@@ -25,7 +25,7 @@ if [[ $OS == *"CentOS"* ]]; then
 
   # Install other deps
   echo "yum installing other stuff"
-  yum -y install policycoreutils-devel setools-console rpm-build
+  yum -y install policycoreutils-devel setools-console rpm-build selinux-policy-devel selinux-policy-targeted
 
 elif [[ $OS == *"Fedora"* ]]; then
   echo "Detected Fedora"

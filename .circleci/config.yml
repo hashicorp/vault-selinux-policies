@@ -17,7 +17,7 @@ references:
     artifactory: &ARTIFACTORY_DOCKER_IMAGE productdelivery-docker-release-local.artifactory.hashicorp.engineering/artifactory-repo-tool:0.1.16
     fedora: &FEDORA_DOCKER_IMAGE "fedora@sha256:ee55117b3058f2f12961184fae4b9c392586e400487626c6bd0d15b4eae94ecc"
     ubuntu: &UBUNTU_DOCKER_IMAGE "circleci/buildpack-deps:bionic"
-    centos: &CENTOS_DOCKER_IMAGE "centos:latest"
+    centos: &CENTOS_DOCKER_IMAGE "centos:8"
 
 environment: &ENVIRONMENT
     HC_PRODUCT: << pipeline.parameters.hc-product >>
