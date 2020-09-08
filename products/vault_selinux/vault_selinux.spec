@@ -51,7 +51,7 @@ exit 0
 
 %postun
 if [ $1 -eq 0 ]; then
-    semanage port -d -p tcp 9876
+    semanage port -d -p tcp 8201
     semodule -n -r vault
     if /usr/sbin/selinuxenabled ; then
        /usr/sbin/load_policy
