@@ -22,7 +22,7 @@ Source1:	vault.if
 Source2:	vault_selinux.8
 
 
-Requires: policycoreutils, libselinux-utils
+Requires: policycoreutils, libselinux-utils, policycoreutils-python-utils
 Requires(post): selinux-policy-base, policycoreutils, policycoreutils-python-utils
 Requires(postun): policycoreutils, policycoreutils-python-utils
 BuildArch: noarch
