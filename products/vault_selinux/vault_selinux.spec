@@ -23,8 +23,8 @@ Source2:	vault_selinux.8
 
 
 Requires: policycoreutils, libselinux-utils
-Requires(post): selinux-policy-base, policycoreutils
-Requires(postun): policycoreutils
+Requires(post): selinux-policy-base, policycoreutils, policycoreutils-python-utils
+Requires(postun): policycoreutils, policycoreutils-python-utils
 BuildArch: noarch
 
 %description
