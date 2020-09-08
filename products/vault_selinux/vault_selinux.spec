@@ -6,6 +6,8 @@ restorecon -R -F -v -i /usr/bin/vault; \
 restorecon -R -F -v -i /etc/vault.d; \
 restorecon -R -F -v -i /opt/vault; \
 restorecon -R -F -v -i /var/log/vault; \
+
+%define relabel_port() \
 semanage port -a -t vault_cluster_port_t -p tcp 8201; \
 
 Name:   vault_selinux
@@ -44,6 +46,7 @@ semodule -n -i %{_datadir}/selinux/packages/vault.pp
 if /usr/sbin/selinuxenabled ; then
     /usr/sbin/load_policy
     %relabel_files
+    %relabel_port
 
 fi;
 exit 0
