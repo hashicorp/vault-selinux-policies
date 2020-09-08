@@ -7,6 +7,20 @@ PACKAGE_ITERATION=${HC_PACKAGE_ITERATION:-1}
 # Name enterprise package consul-enterprise
 PRODUCT_NAME="vault_selinux"
 
+OUTPUT_PATH=$(pwd)
+# Create temporary workspace
+echo "Creating temporary workspace"
+mkdir pkg_tmp
+
+cp ./vault.fc ./pkg_tmp/vault.fc
+cp ./vault.if ./pkg_tmp/vault.if
+cp ./vault.sh ./pkg_tmp/vault.sh
+cp ./vault.te ./pkg_tmp/vault.te
+cp ./vault_selinux.spec ./pkg_tmp/vault_selinux.spec
+
+PACKAGE_DIR=$(cd pkg_tmp; pwd)
+cd $PACKAGE_DIR
+
 # Check for CentOS or Fedora
 
 if [ -f /etc/os-release ]; then
@@ -27,6 +41,9 @@ if [[ $OS == *"CentOS"* ]]; then
   echo "yum installing other stuff"
   yum -y install policycoreutils-devel setools-console rpm-build selinux-policy-devel selinux-policy-targeted
 
+  echo "Updating vault_selinux.spec for CentOS"
+  sed -i "s^#SEMANAGE#^^g" vault_selinux.spec
+
 elif [[ $OS == *"Fedora"* ]]; then
   echo "Detected Fedora"
 
@@ -38,23 +55,12 @@ elif [[ $OS == *"Fedora"* ]]; then
 
   # Install other deps
   echo "dnf installing other stuff"
-   dnf -y install policycoreutils-devel setools-console rpm-build
+  dnf -y install policycoreutils-devel setools-console rpm-build
+
+  echo "Updating vault_selinux.spec for Fedora"
+  sed -i "s^#SEMANAGE#^, policycoreutils-python-utils^g" vault_selinux.spec
 
 fi
-
-OUTPUT_PATH=$(pwd)
-# Create temporary workspace
-echo "Creating temporary workspace"
-mkdir pkg_tmp
-
-cp ./vault.fc ./pkg_tmp/vault.fc
-cp ./vault.if ./pkg_tmp/vault.if
-cp ./vault.sh ./pkg_tmp/vault.sh
-cp ./vault.te ./pkg_tmp/vault.te
-cp ./vault_selinux.spec ./pkg_tmp/vault_selinux.spec
-
-PACKAGE_DIR=$(cd pkg_tmp; pwd)
-cd $PACKAGE_DIR
 
 echo "Updating #VERSION# in vault.te and vault_selinux.spec"
 sed -i "s^#VERSION#^${HC_VERSION}^g" vault.te

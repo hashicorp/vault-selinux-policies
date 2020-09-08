@@ -15,16 +15,15 @@ Summary:	SELinux policy module for vault
 
 Group:	System Environment/Base		
 License:	MPLv2
-# This is an example. You will need to change it.
 URL:		https://www.vaultproject.io/
 Source0:	vault.pp
 Source1:	vault.if
 Source2:	vault_selinux.8
 
 
-Requires: policycoreutils, libselinux-utils, policycoreutils-python-utils
-Requires(post): selinux-policy-base, policycoreutils, policycoreutils-python-utils
-Requires(postun): policycoreutils, policycoreutils-python-utils
+Requires: policycoreutils, libselinux-utils#SEMANAGE#
+Requires(post): selinux-policy-base, policycoreutils#SEMANAGE#
+Requires(postun): policycoreutils#SEMANAGE#
 BuildArch: noarch
 
 %description
