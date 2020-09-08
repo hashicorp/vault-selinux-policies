@@ -48,7 +48,7 @@ require {
 	class netlink_route_socket { bind create getattr nlmsg_read read write };
 	class tcp_socket { accept bind connect create getattr getopt listen setopt read write };
 	class unix_dgram_socket { bind create getattr setopt };
-	class file { create getattr lock open read write };
+	class file { create getattr lock map open read write };
 	class dir { add_name create getattr open read write search };
 }
 
@@ -136,7 +136,7 @@ kernel_read_system_state(vault_t)
 
 # Need to access data files
 allow vault_t vault_sys_content_t:dir { add_name create getattr open read write search };
-allow vault_t vault_sys_content_t:file { create getattr lock open read write };
+allow vault_t vault_sys_content_t:file { create getattr lock map open read write };
 
 # Need to access log files
 allow vault_t vault_log_t:dir { getattr search write add_name };
