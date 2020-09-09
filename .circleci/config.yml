@@ -52,13 +52,13 @@ jobs:
           command: make package
       - run:
           name: Copy rpms to /tmp/circle-artifacts
-          command: mkdir -p /tmp/circle-artifacts && cp products/**/*.rpm /tmp/circle-artifacts
+          command: mkdir -p /tmp/circle-artifacts && cp products/<< pipeline.parameters.hc-product >>/*.rpm /tmp/circle-artifacts
       - store_artifacts:
           path: /tmp/circle-artifacts
       - persist_to_workspace:
           root: .
           paths:
-            - products/<< pipeline.parameters.hc-product >>/*
+            - products/<< pipeline.parameters.hc-product >>/*.rpm
   validate-packages:
     machine:
       image: ubuntu-1604:201903-01
