@@ -41,8 +41,8 @@ if [[ $OS == *"CentOS"* ]]; then
   echo "yum installing other stuff"
   yum -y install policycoreutils-devel setools-console rpm-build selinux-policy-devel selinux-policy-targeted
 
-  echo "Updating vault_selinux.spec for CentOS"
-  sed -i "s^#SEMANAGE#^^g" vault_selinux.spec
+  # echo "Updating vault_selinux.spec for CentOS"
+  # sed -i "s^#SEMANAGE#^^g" vault_selinux.spec
 
 elif [[ $OS == *"Fedora"* ]]; then
   echo "Detected Fedora"
@@ -57,8 +57,8 @@ elif [[ $OS == *"Fedora"* ]]; then
   echo "dnf installing other stuff"
   dnf -y install policycoreutils-devel setools-console rpm-build
 
-  echo "Updating vault_selinux.spec for Fedora"
-  sed -i "s^#SEMANAGE#^, policycoreutils-python-utils^g" vault_selinux.spec
+  # echo "Updating vault_selinux.spec for Fedora"
+  # sed -i "s^#SEMANAGE#^, policycoreutils-python-utils^g" vault_selinux.spec
 
 fi
 
