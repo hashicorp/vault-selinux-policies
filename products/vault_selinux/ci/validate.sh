@@ -11,16 +11,28 @@ if ! [ -z "${CI:-""}" ]; then
   chmod a+rwx -R ./
 fi
 
-# Run rpm validation
+# Run CentOS rpm validation
 CENTOS_ID=$(docker run -d -v $WORKDIR:/app -e HC_PRODUCT=$HC_PRODUCT -e HC_VERSION=$HC_VERSION \
   --entrypoint="" -w="/app" --privileged $IMAGE_CENTOS_SYSTEM /usr/sbin/init)
 # Wait for CentOS to spin up
 sleep 1
 docker exec $CENTOS_ID yum install -y libselinux-utils policycoreutils policycoreutils-python-utils selinux-policy-targeted
-#docker exec $CENTOS_ID yum install -y /app/$(ls products/*/*el*.noarch.rpm)
+docker exec $CENTOS_ID yum install -y /app/$(ls products/*/*el*.noarch.rpm)
 
 docker exec $CENTOS_ID bash -c 'semanage module -l | grep vault'
 
 docker stop $CENTOS_ID
+
+# Run Fedora rpm validation
+FEDORA_ID=$(docker run -d -v $WORKDIR:/app -e HC_PRODUCT=$HC_PRODUCT -e HC_VERSION=$HC_VERSION \
+  --entrypoint="" -w="/app" --privileged $IMAGE_RPM_SYSTEM /usr/sbin/init)
+# Wait for CentOS to spin up
+sleep 1
+docker exec $FEDORA_ID yum install -y libselinux-utils policycoreutils policycoreutils-python-utils selinux-policy-targeted
+docker exec $FEDORA_ID yum install -y /app/$(ls products/*/*fc*.noarch.rpm)
+
+docker exec $FEDORA_ID bash -c 'semanage module -l | grep vault'
+
+docker stop $FEDORA_ID
 
 echo "Validation tests complete."
