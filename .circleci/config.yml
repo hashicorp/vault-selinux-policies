@@ -66,11 +66,11 @@ jobs:
       <<: *ENVIRONMENT
     steps:
       - attach_workspace:
-        at: .
+          at: .
       - run:
-        name: Validate packages
-        command: |
-          ./products/<< pipeline.parameters.hc-product >>/ci/validate.sh
+          name: Validate packages
+          command: |
+            ./products/<< pipeline.parameters.hc-product >>/ci/validate.sh
 
 workflows:
   version: 2
