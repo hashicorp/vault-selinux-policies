@@ -24,6 +24,7 @@ environment: &ENVIRONMENT
     HC_VERSION: << pipeline.parameters.hc-version >>
     HC_PACKAGE_ITERATION: << pipeline.parameters.hc-package-iteration >>
     IMAGE_RPM_SYSTEM: *FEDORA_DOCKER_IMAGE
+    IMAGE_CENTOS_SYSTEM: *CENTOS_DOCKER_IMAGE
     IMAGE_APT_SYSTEM: *UBUNTU_DOCKER_IMAGE
 
 jobs:
