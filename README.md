@@ -94,6 +94,7 @@ After you `sudo sh ./vault.sh` it will install the policy, plus, it will create 
 
 I did a _lot_ of googling to get my head around this, and realize I have a bunch of tabs open, so I'll try and capture my open tabs here:
 
+* Red Hat's What Is SELinux https://www.redhat.com/en/topics/linux/what-is-selinux
 * Sysadmin's guide to selinux https://opensource.com/article/18/7/sysadmin-guide-selinux
 * How to generate a new initial policy using sepolicy-generate https://mgrepl.wordpress.com/2015/05/20/how-to-create-a-new-initial-policy-using-sepolicy-generate-tool/
 * Fun with selinux presentation: https://mgrepl.fedorapeople.org/PolicyCourse/writingSELinuxpolicy_MUNI.pdf
