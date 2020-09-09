@@ -24,7 +24,7 @@ Source2:	vault_selinux.8
 
 
 Requires: policycoreutils, libselinux-utils#SEMANAGE#
-Requires(post): selinux-policy-base, policycoreutils#SEMANAGE#
+Requires(post): selinux-policy-targeted, policycoreutils#SEMANAGE#
 Requires(postun): policycoreutils#SEMANAGE#
 BuildArch: noarch
 
@@ -46,9 +46,8 @@ semodule -n -i %{_datadir}/selinux/packages/vault.pp
 if /usr/sbin/selinuxenabled ; then
     /usr/sbin/load_policy
     %relabel_files
-    %relabel_port
-
 fi;
+%relabel_port
 exit 0
 
 %preun

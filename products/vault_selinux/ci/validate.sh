@@ -20,6 +20,7 @@ docker exec $CENTOS_ID yum install -y libselinux-utils policycoreutils policycor
 docker exec $CENTOS_ID yum install -y /app/$(ls products/*/*el8.noarch.rpm)
 
 docker exec $CENTOS_ID bash -c 'semanage module -l | grep vault'
+docker exec $CENTOS_ID bash -c 'semanage port -l | grep vault_cluster_port_t'
 
 docker stop $CENTOS_ID
 
@@ -32,6 +33,7 @@ docker exec $FEDORA_ID dnf install -y libselinux-utils policycoreutils policycor
 docker exec $FEDORA_ID dnf install -y /app/$(ls products/*/*el8.noarch.rpm)
 
 docker exec $FEDORA_ID bash -c 'semanage module -l | grep vault'
+docker exec $FEDORA_ID bash -c 'semanage port -l | grep vault_cluster_port_t'
 
 docker stop $FEDORA_ID
 
