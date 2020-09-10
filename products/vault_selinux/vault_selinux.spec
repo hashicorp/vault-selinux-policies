@@ -24,7 +24,7 @@ Source2:	vault_selinux.8
 
 
 Requires: policycoreutils, libselinux-utils#SEMANAGE#
-Requires(post): selinux-policy-targeted, policycoreutils#SEMANAGE
+Requires(post): selinux-policy-targeted, policycoreutils#SEMANAGE#
 Requires(postun): policycoreutils#SEMANAGE#
 BuildArch: noarch
 

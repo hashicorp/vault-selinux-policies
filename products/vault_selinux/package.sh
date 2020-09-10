@@ -141,9 +141,9 @@ sed -i "s^#VERSION#^${HC_VERSION}^g" vault_selinux.spec
 
 # Run the sepolicy builder
 sh ./vault.sh
-rename el8 fc31 *.rpm
+rename el8 fc32 *.rpm
 cp *.rpm $OUTPUT_PATH
-rename el8 fc31 noarch/*.rpm
+rename el8 fc32 noarch/*.rpm
 cp noarch/*.rpm $OUTPUT_PATH
 
 # Cleanup
