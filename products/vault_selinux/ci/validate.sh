@@ -21,6 +21,7 @@ docker exec $CENTOS_ID yum install -y /app/$(ls products/*/*el8.noarch.rpm)
 
 docker exec $CENTOS_ID bash -c 'semanage module -l | grep vault'
 docker exec $CENTOS_ID bash -c 'semanage port -l | grep vault_cluster_port_t'
+docker exec $CENTOS_ID yum remove -y vault_selinux
 
 docker stop $CENTOS_ID
 
@@ -30,10 +31,11 @@ FEDORA_ID=$(docker run -d -v $WORKDIR:/app -e HC_PRODUCT=$HC_PRODUCT -e HC_VERSI
 # Wait for CentOS to spin up
 sleep 1
 docker exec $FEDORA_ID dnf install -y libselinux-utils policycoreutils policycoreutils-python-utils selinux-policy-targeted
-docker exec $FEDORA_ID dnf install -y /app/$(ls products/*/*el8.noarch.rpm)
+docker exec $FEDORA_ID dnf install -y /app/$(ls products/*/*fc32.noarch.rpm)
 
 docker exec $FEDORA_ID bash -c 'semanage module -l | grep vault'
 docker exec $FEDORA_ID bash -c 'semanage port -l | grep vault_cluster_port_t'
+docker exec $FEDORA_ID dnf remove -y vault_selinux
 
 docker stop $FEDORA_ID
 
