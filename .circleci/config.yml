@@ -59,15 +59,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - products/<< pipeline.parameters.hc-product >>/*.rpm
-      - when:
-          condition:
-            equal: [ << parameters.host-image >>, *CENTOS_DOCKER_IMAGE ]
-          steps:
-            - persist_to_workspace:
-                root: .
-                paths:
-                  - products/<< pipeline.parameters.hc-product >>/ci
+            - products/<< pipeline.parameters.hc-product >>/*
   validate-packages:
     machine:
       image: ubuntu-1604:201903-01
