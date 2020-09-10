@@ -59,7 +59,15 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - products/<< pipeline.parameters.hc-product >>/*
+            - products/<< pipeline.parameters.hc-product >>/*.rpm
+      - when:
+          condition:
+            equal: [ << parameters.host-image >>, *CENTOS_DOCKER_IMAGE ]
+          steps:
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - products/<< pipeline.parameters.hc-product >>/ci
   validate-packages:
     machine:
       image: ubuntu-1604:201903-01
@@ -80,8 +88,8 @@ workflows:
       - package:
           matrix:
             parameters:
-              # host-image: [*FEDORA_DOCKER_IMAGE, *CENTOS_DOCKER_IMAGE]
-              host-image: [*CENTOS_DOCKER_IMAGE]
+              host-image: [*FEDORA_DOCKER_IMAGE, *CENTOS_DOCKER_IMAGE]
+              # host-image: [*CENTOS_DOCKER_IMAGE]
           filters:
             branches:
               only: dev
