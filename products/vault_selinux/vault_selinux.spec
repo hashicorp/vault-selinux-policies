@@ -29,7 +29,7 @@ Requires(postun): policycoreutils
 BuildArch: noarch
 %endif
 
-%if 0%{?fc32}
+%if 0%{?fc31}
 Requires: policycoreutils, libselinux-utils, policycoreutils-python-utils
 Requires(post): selinux-policy-targeted, policycoreutils, policycoreutils-python-utils
 Requires(postun): policycoreutils, policycoreutils-python-utils
