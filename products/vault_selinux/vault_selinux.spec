@@ -23,9 +23,9 @@ Source1:	vault.if
 Source2:	vault_selinux.8
 
 
-Requires: policycoreutils, libselinux-utils, selinux-policy-targeted
-Requires(post): selinux-policy-targeted, policycoreutils, policycoreutils-python-utils
-Requires(postun): policycoreutils, policycoreutils-python-utils
+Requires: policycoreutils, libselinux-utils#SEMANAGE#
+Requires(post): selinux-policy-targeted, policycoreutils#SEMANAGE
+Requires(postun): policycoreutils#SEMANAGE#
 BuildArch: noarch
 
 %description
