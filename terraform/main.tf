@@ -190,8 +190,9 @@ data "template_file" "user_data" {
 }
 
 resource "aws_instance" "instance" {
-  # ami = data.aws_ami.fedora.id
-  ami = "ami-09f17ac4a76fd9ffe" # fedora AMI
+  ami = data.aws_ami.centos.id
+  # ami = data.aws_ami.ubuntu.id
+  # ami = "ami-09f17ac4a76fd9ffe" # fedora AMI
   instance_type = "t2.medium"
   key_name = aws_key_pair.ssh.key_name
   subnet_id = aws_subnet.public.id
@@ -200,7 +201,8 @@ resource "aws_instance" "instance" {
 }
 
 resource "aws_instance" "instance2" {
-  ami = data.aws_ami.centos.id
+  # ami = data.aws_ami.centos.id
+  ami = "ami-09f17ac4a76fd9ffe" # fedora AMI
   instance_type = "t2.medium"
   key_name = aws_key_pair.ssh.key_name
   subnet_id = aws_subnet.public.id
