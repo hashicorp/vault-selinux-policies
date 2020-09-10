@@ -38,6 +38,8 @@ jobs:
       <<: *ENVIRONMENT
     steps:
       - checkout
+      # The below is required because I'm building on a generic CentOS and Fedora container
+      # Ideally this would use the ARTIFACTORY_DOCKER_IMAGE and the pre-reqs would exist
       - when:
           condition:
             equal: [ << parameters.host-image >>, *FEDORA_DOCKER_IMAGE ]
