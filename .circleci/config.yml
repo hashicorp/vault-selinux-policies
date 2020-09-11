@@ -4,10 +4,17 @@ version: 2.1
 parameters:
   hc-product:
     type: string
+<<<<<<< HEAD
     default: "vault_selinux"
   hc-version:
     type: string
     default: "0.1.1"
+=======
+    default: "dummy"
+  hc-version:
+    type: string
+    default: "0.0.1"
+>>>>>>> master
   hc-package-iteration:
     type: string
     default: "1"
@@ -17,27 +24,39 @@ references:
     artifactory: &ARTIFACTORY_DOCKER_IMAGE productdelivery-docker-release-local.artifactory.hashicorp.engineering/artifactory-repo-tool:0.1.16
     fedora: &FEDORA_DOCKER_IMAGE "fedora@sha256:ee55117b3058f2f12961184fae4b9c392586e400487626c6bd0d15b4eae94ecc"
     ubuntu: &UBUNTU_DOCKER_IMAGE "circleci/buildpack-deps:bionic"
+<<<<<<< HEAD
     centos: &CENTOS_DOCKER_IMAGE "centos:8"
+=======
+>>>>>>> master
 
 environment: &ENVIRONMENT
     HC_PRODUCT: << pipeline.parameters.hc-product >>
     HC_VERSION: << pipeline.parameters.hc-version >>
     HC_PACKAGE_ITERATION: << pipeline.parameters.hc-package-iteration >>
     IMAGE_RPM_SYSTEM: *FEDORA_DOCKER_IMAGE
+<<<<<<< HEAD
     IMAGE_CENTOS_SYSTEM: *CENTOS_DOCKER_IMAGE
+=======
+>>>>>>> master
     IMAGE_APT_SYSTEM: *UBUNTU_DOCKER_IMAGE
 
 jobs:
   package:
+<<<<<<< HEAD
     parameters:
       host-image:
         type: string
     docker:
       - image: << parameters.host-image >>
+=======
+    docker:
+      - image: *FEDORA_DOCKER_IMAGE
+>>>>>>> master
     environment:
       <<: *ENVIRONMENT
     steps:
       - checkout
+<<<<<<< HEAD
       # The below is required because I'm building on a generic CentOS and Fedora container
       # Ideally this would use the ARTIFACTORY_DOCKER_IMAGE and the pre-reqs would exist
       - when:
@@ -82,12 +101,18 @@ jobs:
           name: Validate packages
           command: |
             ./products/<< pipeline.parameters.hc-product >>/ci/validate.sh
+=======
+      - run:
+          name: Create linux packages
+          command: make package
+>>>>>>> master
 
 workflows:
   version: 2
   packaging:
     jobs:
       - package:
+<<<<<<< HEAD
           matrix:
             parameters:
               host-image: [*FEDORA_DOCKER_IMAGE, *CENTOS_DOCKER_IMAGE]
@@ -98,3 +123,8 @@ workflows:
       - validate-packages:
           requires:
             - package
+=======
+          filters:
+            branches:
+              only: dev
+>>>>>>> master

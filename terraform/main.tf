@@ -190,9 +190,14 @@ data "template_file" "user_data" {
 }
 
 resource "aws_instance" "instance" {
+<<<<<<< HEAD:terraform/main.tf
   ami = data.aws_ami.centos.id
   # ami = data.aws_ami.ubuntu.id
   # ami = "ami-09f17ac4a76fd9ffe" # fedora AMI
+=======
+  # ami = data.aws_ami.fedora.id
+  ami = "ami-09f17ac4a76fd9ffe"
+>>>>>>> master:cf-test/terraform/main.tf
   instance_type = "t2.medium"
   key_name = aws_key_pair.ssh.key_name
   subnet_id = aws_subnet.public.id
