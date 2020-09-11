@@ -2,31 +2,39 @@
 
 
 %define relabel_files() \
-restorecon -R /usr/sbin/vault; \
-restorecon -R /etc/vault.d; \
-restorecon -R /opt/vault; \
-restorecon -R /var/log/vault; \
+restorecon -R -F -v -i /usr/bin/vault; \
+restorecon -R -F -v -i /etc/vault.d; \
+restorecon -R -F -v -i /opt/vault; \
+restorecon -R -F -v -i /var/log/vault; \
 
-%define selinux_policyver 3.13.1-266
+%define relabel_port() \
+semanage port -a -t vault_cluster_port_t -p tcp 8201; \
 
 Name:   vault_selinux
-Version:	1.1
+Version:	#VERSION#
 Release:	1%{?dist}
 Summary:	SELinux policy module for vault
 
 Group:	System Environment/Base		
 License:	MPLv2
-# This is an example. You will need to change it.
 URL:		https://www.vaultproject.io/
 Source0:	vault.pp
 Source1:	vault.if
 Source2:	vault_selinux.8
 
-
+%if 0%{?el8}
 Requires: policycoreutils, libselinux-utils
-Requires(post): selinux-policy-base >= %{selinux_policyver}, policycoreutils
+Requires(post): selinux-policy-targeted, policycoreutils
 Requires(postun): policycoreutils
 BuildArch: noarch
+%endif
+
+%if 0%{?fc31}
+Requires: policycoreutils, libselinux-utils, policycoreutils-python-utils
+Requires(post): selinux-policy-targeted, policycoreutils, policycoreutils-python-utils
+Requires(postun): policycoreutils, policycoreutils-python-utils
+BuildArch: noarch
+%endif
 
 %description
 This package installs and sets up the  SELinux policy security module for vault.
@@ -46,8 +54,12 @@ semodule -n -i %{_datadir}/selinux/packages/vault.pp
 if /usr/sbin/selinuxenabled ; then
     /usr/sbin/load_policy
     %relabel_files
-
 fi;
+%relabel_port
+exit 0
+
+%preun
+semanage port -d -p tcp 8201
 exit 0
 
 %postun
@@ -68,9 +80,12 @@ exit 0
 
 
 %changelog
-* Fri Aug 28 2020 Christian Frichot <cfrichot@hashicorp.com> 1.1-1
+* Wed Sep 2 2020 Christian Frichot <cfrichot@hashicorp.com> 0.1.2-1
+- Update for Hashicorp RPM Vault install
+
+* Fri Aug 28 2020 Christian Frichot <cfrichot@hashicorp.com> 0.1.1-1
 - Update to allow for outbound comms
 
-* Wed Aug 12 2020 Christian Frichot <cfrichot@hashicorp.com> 1.0-1
+* Wed Aug 12 2020 Christian Frichot <cfrichot@hashicorp.com> 0.1.0-1
 - Initial version
 

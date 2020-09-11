@@ -190,8 +190,14 @@ data "template_file" "user_data" {
 }
 
 resource "aws_instance" "instance" {
+<<<<<<< HEAD:terraform/main.tf
+  ami = data.aws_ami.centos.id
+  # ami = data.aws_ami.ubuntu.id
+  # ami = "ami-09f17ac4a76fd9ffe" # fedora AMI
+=======
   # ami = data.aws_ami.fedora.id
   ami = "ami-09f17ac4a76fd9ffe"
+>>>>>>> master:cf-test/terraform/main.tf
   instance_type = "t2.medium"
   key_name = aws_key_pair.ssh.key_name
   subnet_id = aws_subnet.public.id
@@ -199,14 +205,15 @@ resource "aws_instance" "instance" {
   # user_data = data.template_file.user_data.rendered
 }
 
-# resource "aws_instance" "instance2" {
-#   ami = data.aws_ami.centos.id
-#   instance_type = "t2.medium"
-#   key_name = aws_key_pair.ssh.key_name
-#   subnet_id = aws_subnet.public.id
-#   vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
-#   user_data = data.template_file.user_data.rendered
-# }
+resource "aws_instance" "instance2" {
+  # ami = data.aws_ami.centos.id
+  ami = "ami-09f17ac4a76fd9ffe" # fedora AMI
+  instance_type = "t2.medium"
+  key_name = aws_key_pair.ssh.key_name
+  subnet_id = aws_subnet.public.id
+  vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
+  # user_data = data.template_file.user_data.rendered
+}
 
 output "instance_ip" {
   value = aws_instance.instance.public_ip
@@ -216,13 +223,13 @@ output "instance_ip_private" {
   value = aws_instance.instance.private_ip
 }
 
-# output "instance2_ip" {
-#   value = aws_instance.instance2.public_ip
-# }
-#
-# output "instance2_ip_private" {
-#   value = aws_instance.instance2.private_ip
-# }
+output "instance2_ip" {
+  value = aws_instance.instance2.public_ip
+}
+
+output "instance2_ip_private" {
+  value = aws_instance.instance2.private_ip
+}
 
 output "instance_az" {
   value = aws_instance.instance.availability_zone

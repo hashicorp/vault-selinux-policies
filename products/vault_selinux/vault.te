@@ -1,4 +1,4 @@
-policy_module(vault, 1.1)
+policy_module(vault, #VERSION#)
 
 ########################################
 #
@@ -7,7 +7,7 @@ policy_module(vault, 1.1)
 
 type vault_t;
 
-# Mapped to the /usr/sbin/vault binary/process
+# Mapped to the /usr/bin/vault binary/process
 type vault_exec_t;
 
 ## init_daemon_domain
@@ -27,6 +27,10 @@ files_type(vault_sys_content_t)
 type vault_log_t;
 files_type(vault_log_t)
 
+# Mapped to tcp:8201
+type vault_cluster_port_t;
+corenet_port(vault_cluster_port_t)
+
 # If you uncomment the below - this changes enforcement to permissive
 # i.e. selinux will audit but not block
 #permissive vault_t;
@@ -44,7 +48,7 @@ require {
 	class netlink_route_socket { bind create getattr nlmsg_read read write };
 	class tcp_socket { accept bind connect create getattr getopt listen setopt read write };
 	class unix_dgram_socket { bind create getattr setopt };
-	class file { create getattr lock open read write };
+	class file { create getattr lock map open read write };
 	class dir { add_name create getattr open read write search };
 }
 
@@ -66,10 +70,15 @@ corenet_tcp_bind_generic_node(vault_t)
 corenet_tcp_bind_trivnet1_port(vault_t)
 # and allowing connecting to it too
 corenet_tcp_connect_trivnet1_port(vault_t)
-# unreserved allowes for 8201 - which isn't configured like 8200
-corenet_tcp_bind_unreserved_ports(vault_t)
-# and connect to them too
-corenet_tcp_connect_unreserved_ports(vault_t)
+# # unreserved allowes for 8201 - which isn't configured like 8200
+# corenet_tcp_bind_unreserved_ports(vault_t)
+# # and connect to them too
+# corenet_tcp_connect_unreserved_ports(vault_t)
+#
+# We've added the vault_cluster_port_t and package tasks should run the following to label
+# $ semanage port -a -t vault_cluster_port_t -p tcp 8201
+allow vault_t vault_cluster_port_t:tcp_socket { name_bind name_connect };
+
 kernel_read_net_sysctls(vault_t)
 kernel_search_network_sysctl(vault_t)
 
@@ -87,6 +96,16 @@ domain_use_interactive_fds(vault_t)
 ## miscfiles_read_localization
 ###  Allow process to read localization information.
 miscfiles_read_localization(vault_t)
+
+## dev_read_sysfs
+###  Allow the specified domain to read the contents of
+###  the sysfs filesystem.  This filesystem contains
+###  information, parameters, and other settings on the
+###  hardware installed on the system.
+##
+## This was needed for Fedora (but apparently not CentOS)
+## Although Vault seems to function even without the perm
+dev_read_sysfs(vault_t)
 
 ## init_nnp_daemon_domain
 ###  Allow SELinux Domain trasition from sytemd
@@ -117,7 +136,7 @@ kernel_read_system_state(vault_t)
 
 # Need to access data files
 allow vault_t vault_sys_content_t:dir { add_name create getattr open read write search };
-allow vault_t vault_sys_content_t:file { create getattr lock open read write };
+allow vault_t vault_sys_content_t:file { create getattr lock map open read write };
 
 # Need to access log files
 allow vault_t vault_log_t:dir { getattr search write add_name };
