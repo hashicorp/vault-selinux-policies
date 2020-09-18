@@ -92,9 +92,9 @@ workflows:
             parameters:
               # host-image: [*FEDORA_DOCKER_IMAGE, *CENTOS_DOCKER_IMAGE]
               host-image: [*CENTOS_DOCKER_IMAGE]
-          filters:
-            branches:
-              only: dev
+          # filters:
+          #   branches:
+          #     only: dev
       - validate-packages:
           requires:
             - package
