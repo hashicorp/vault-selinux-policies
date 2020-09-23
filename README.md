@@ -1,6 +1,6 @@
 # vault-selinux-policies
 
-**NOT READY FOR USE AS OF 28-JULY-2020**
+**NOT READY FOR USE AS OF 23-Sept-2020**
 
 A set of base SELinux policies, and CircleCI to _try_ and package the policies into RPMs for Vault currently under development.
 
