@@ -185,10 +185,6 @@ resource "aws_security_group_rule" "allow_http_inbound_from_self" {
   security_group_id = aws_security_group.ssh.id
 }
 
-data "template_file" "user_data" {
-  template = file("user-data-vault.sh")
-}
-
 resource "aws_instance" "instance" {
   ami = data.aws_ami.centos.id
   # ami = data.aws_ami.ubuntu.id
@@ -197,7 +193,6 @@ resource "aws_instance" "instance" {
   key_name = aws_key_pair.ssh.key_name
   subnet_id = aws_subnet.public.id
   vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
-  # user_data = data.template_file.user_data.rendered
 }
 
 resource "aws_instance" "instance2" {
@@ -207,7 +202,6 @@ resource "aws_instance" "instance2" {
   key_name = aws_key_pair.ssh.key_name
   subnet_id = aws_subnet.public.id
   vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
-  # user_data = data.template_file.user_data.rendered
 }
 
 output "instance_ip" {
@@ -229,10 +223,6 @@ output "instance2_ip_private" {
 output "instance_az" {
   value = aws_instance.instance.availability_zone
 }
-
-# output "instance2_az" {
-#   value = aws_instance.instance2.availability_zone
-# }
 
 output "vpc_id" {
   value = aws_vpc.vpc.id

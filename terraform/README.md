@@ -1,6 +1,8 @@
 # quick ec2
 
-A quick/nasty terraform to spin up a separate VPC with public-subnet and an Ubuntu 18.04 server in it. Plus a bit of bootstrapping stuff too.
+A quick terraform to spin up instances in aws to test Vault SELinux policies on.
+
+By default this will spin up a CentOS and Fedora instance.
 
 ## Prerequisites
 
@@ -11,8 +13,6 @@ You also need to have AWS credentials / config setup in your ~/.aws/ folder.
 Oh, and terraform (tested with version 0.12.21). 
 
 ## Config
-
-Edit `user-data.sh` to your hearts desire.
 
 If you want to modify the 'name' or 'ssh pub key' for terraform feel free to set variables for `name` and `pub_key_file` in setup.auto.tfvars.
 
