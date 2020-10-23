@@ -45,13 +45,13 @@ make -f /usr/share/selinux/devel/Makefile vault.pp || exit
 # Generate a man page off the installed module
 sepolicy manpage -p . -d vault_t
 # Fixing the file context on /usr/sbin/vault
-/sbin/restorecon -F -R -v /usr/bin/vault
+/sbin/restorecon -F -R -v -i /usr/bin/vault
 # Fixing the file context on /var/log/vault
-/sbin/restorecon -F -R -v /var/log/vault
+/sbin/restorecon -F -R -v -i /var/log/vault
 # Fixing the file context on /opt/vault
-/sbin/restorecon -F -R -v /opt/vault
+/sbin/restorecon -F -R -v -i /opt/vault
 # Fixing the file context on /etc/vault.d
-/sbin/restorecon -F -R -v /etc/vault.d
+/sbin/restorecon -F -R -v -i /etc/vault.d
 # Labeling 8201
 /sbin/semanage port -a -t vault_cluster_port_t -p tcp 8201
 # Generate a rpm package for the newly generated policy
