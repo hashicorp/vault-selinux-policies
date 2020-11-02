@@ -13,7 +13,7 @@ This repo holds the raw SELinux policy files, the packaging scripts _and_ valida
 ### Caveats
 
 * The SELinux policy file contexts, used as part of SELinux labelling, map to where the packaged versions of Vault install their config, data and log files. The Vault packages are available from: https://learn.hashicorp.com/tutorials/vault/getting-started-install
-* The SELinux policies do allow fairly open outbound network traffic.
+* The SELinux policies do allow fairly open outbound network traffic, although not outbound HTTP access by default.
 * The SELinux policies haven't been tested with Vault+Consul, or other storage engines, except for Integrated Storage.
 * The current policy is in Enforced Mode (which will block and audit), but can be edited into Permissive Mode (which will audit only).
 
@@ -22,6 +22,13 @@ This repo holds the raw SELinux policy files, the packaging scripts _and_ valida
 The [products/vault_selinux/](products/vault_selinux/) folder contains the raw SELinux config files, plus [package.sh](products/vault_selinux/package.sh). This script gets executed by [circle](.circleci/config.yml).
 
 The [products/vault_selinux/](products/vault_selinux/) folder contains the [ci/validate.sh](products/vault_selinux/ci/validate.sh) script. This gets executed by [circle](.circleci/config.yml) too.
+
+### Booleans
+
+While the current baseline provides fairly open access, there are some features that are gated by SELinux [Booleans](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Using_SELinux_booleans).
+
+* `vault_outbound_dns` - if set will allow Vault to query DNS via UDP
+* `vault_outbound_http` - if set will allow Vault to send outbound HTTP requests
 
 ## Editing the source
 
