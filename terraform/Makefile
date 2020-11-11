@@ -17,6 +17,13 @@ clean: ## Remove .terraform folder, state and plan files
 	rm plan.out
 	rm terraform.tfstate*
 
+.PHONY: integration
+integration: ## Runs up, then the e2e script
+	make up
+	./e2e.sh --rpm-file ./vault_selinux-0.1.1-1.el8.noarch.rpm
+	make down
+
+
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

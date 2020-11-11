@@ -6,6 +6,8 @@ INSTANCE_IP=""
 INSTANCE2_IP=""
 ROOT_TOKEN=""
 
+SCRIPT_NAME="e2e.sh"
+
 function log {
   local -r level="$1"
   local -r message="$2"
@@ -190,6 +192,8 @@ function vault_list_peers() {
     log_error "Peer count doesn't equal 2, instead it equals ${peer_count}"
     exit 1
   fi
+
+  log_info "Looks like we have two peers, which is correct!!"
 }
 
 function push_file() {
