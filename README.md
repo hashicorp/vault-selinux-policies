@@ -1,7 +1,5 @@
 # vault-selinux-policies
 
-**NOT READY FOR USE AS OF 23-Oct-2020**
-
 A set of base SELinux policies, and CircleCI scripts to package the policies into RPMs (targeting CentOS and Fedora) for [HashiCorp Vault](https://www.vaultproject.io).
 
 It is _not_ recommended to run these in Production without extensive testing first!
