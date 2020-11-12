@@ -21,10 +21,7 @@ docker exec $CENTOS_ID yum install -y /app/$(ls products/*/*el8.noarch.rpm)
 
 docker exec $CENTOS_ID bash -c 'semanage module -l | grep vault'
 docker exec $CENTOS_ID bash -c 'semanage port -l | grep vault_cluster_port_t'
-docker exec $CENTOS_ID bash -c 'semanage boolean -l'
-docker exec $CENTOS_ID bash -c 'semanage boolean -l | grep vault'
-# docker exec $CENTOS_ID bash -c 'setsebool vault_outbound_udp_dns on'
-# docker exec $CENTOS_ID bash -c 'setsebool vault_outbound_http on'
+docker exec $CENTOS_ID bash -c 'semanage boolean -l | grep vault_outbound'
 docker exec $CENTOS_ID yum remove -y vault_selinux
 
 docker stop $CENTOS_ID
@@ -39,8 +36,7 @@ docker exec $FEDORA_ID dnf install -y /app/$(ls products/*/*fc31.noarch.rpm)
 
 docker exec $FEDORA_ID bash -c 'semanage module -l | grep vault'
 docker exec $FEDORA_ID bash -c 'semanage port -l | grep vault_cluster_port_t'
-# docker exec $CENTOS_ID bash -c 'setsebool vault_outbound_udp_dns on'
-# docker exec $CENTOS_ID bash -c 'setsebool vault_outbound_http on'
+docker exec $CENTOS_ID bash -c 'semanage boolean -l | grep vault_outbound'
 docker exec $FEDORA_ID dnf remove -y vault_selinux
 
 docker stop $FEDORA_ID
