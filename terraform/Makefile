@@ -19,8 +19,12 @@ clean: ## Remove .terraform folder, state and plan files
 
 .PHONY: integration
 integration: ## Runs up, then the e2e script
+ifeq (,$(wildcard ./vault_selinux.rpm))
+	@echo "Couldn't find ./vault_selinux.rpm"
+	@exit 1
+endif
 	make up
-	./e2e.sh --rpm-file ./vault_selinux-0.1.1-1.el8.noarch.rpm
+	./e2e.sh --rpm-file ./vault_selinux.rpm
 	make down
 
 

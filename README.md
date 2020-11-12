@@ -27,8 +27,22 @@ The [products/vault_selinux/](products/vault_selinux/) folder contains the [ci/v
 
 While the current baseline provides fairly open access, there are some features that are gated by SELinux [Booleans](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Using_SELinux_booleans).
 
-* `vault_outbound_dns` - if set will allow Vault to query DNS via UDP
+* `vault_outbound_udp_dns` - if set will allow Vault to query DNS via UDP
 * `vault_outbound_http` - if set will allow Vault to send outbound HTTP requests
+
+To enable the booleans:
+
+```
+sudo setsebool vault_outbound_udp_dns on
+sudo setsebool vault_outbound_http on
+```
+
+If you'd like to persist these setting:
+
+```
+sudo setsebool -P vault_outbound_udp_dns on
+sudo setsebool -P vault_outbound_http on
+```
 
 ## Editing the source
 
@@ -106,9 +120,7 @@ To re-install, after making changes to the SELinux files, you can re-run this sc
 
 ## Testing on AWS
 
-To test that the RPM packages are installable the `terraform` directory contains logic to spin up 2 instances:
-- A Fedora EC2 instance
-- A CentOS EC2 instance
+To test that the RPM packages are installable the `terraform` directory contains logic to spin up 2 Centos instances.
 
 ```
 cd terraform
@@ -121,9 +133,7 @@ SSH to the instances then run:
 sudo cloud-init status --wait
 ```
 
-Wait until the cloud-init stuff has finished
-
-Install Vault as per instructions from: https://learn.hashicorp.com/tutorials/vault/getting-started-install?in=vault/getting-started following the Linux `CentOS/RHEL` or `Fedora` commands
+Wait until the cloud-init stuff has finished, this will install Vault from the latest available package.
 
 SCP the appropriate RPM to the instances.
 
@@ -180,3 +190,11 @@ make down
 ```
 
 from the terraform folder.
+
+## End to End Testing on AWS
+
+First, ensure you can `make up` and `make down` as above.
+
+Second, place a copy of the CentOS RPM into the `terraform` folder as `vault_selinux.rpm`.
+
+Then run `make integration` from within the `terraform` folder. This will spin up the cluster, as above, then interact with the instances, deploying the RPM, and ensuring that they can function.

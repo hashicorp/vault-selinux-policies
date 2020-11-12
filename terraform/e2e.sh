@@ -182,7 +182,7 @@ function vault_list_peers() {
     log_error "Need to provide IP to check peers"
     exit 1
   fi
-  
+
   log_info "Fetching raft peer list"
 
   peers=$(ssh centos@${ip} VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=${ROOT_TOKEN} vault operator raft list-peers -format=json | jq -r '.')
@@ -244,7 +244,7 @@ function update_selinux_outbound() {
 
   log_info "Updating selinux policies to allow outbound DNS and HTTP"
 
-  ssh centos@${ip} sudo setsebool vault_outbound_dns ${state}
+  ssh centos@${ip} sudo setsebool vault_outbound_udp_dns ${state}
   ssh centos@${ip} sudo setsebool vault_outbound_http ${state}
 }
 
@@ -323,7 +323,6 @@ function e2e {
   vault_list_peers $INSTANCE_IP
 
   log_info "====================== End to End Testing Completed Successfully!"
-  
 }
 
 e2e "$@"

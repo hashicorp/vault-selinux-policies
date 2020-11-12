@@ -80,6 +80,9 @@ exit 0
 
 
 %changelog
+* Thu Nov 12 2020 Christian Frichot <cfrichot@hashicorp.com> 0.1.3-1
+- Added booleans for outbound udp/dns and http
+
 * Wed Sep 2 2020 Christian Frichot <cfrichot@hashicorp.com> 0.1.2-1
 - Update for Hashicorp RPM Vault install
 

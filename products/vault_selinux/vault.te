@@ -148,8 +148,8 @@ allow vault_t vault_log_t:file { create append open setattr };
 ## typically used to resolve DNS.
 ## </p>
 ## </desc>
-gen_tunable(vault_outbound_dns, false)
-tunable_policy(`vault_outbound_dns',`
+gen_tunable(vault_outbound_udp_dns, false)
+tunable_policy(`vault_outbound_udp_dns',`
   require {
     class udp_socket { connect create getattr read setopt write };
     type vault_t;
