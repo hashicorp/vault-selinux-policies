@@ -141,3 +141,34 @@ allow vault_t vault_sys_content_t:file { create getattr lock map open read write
 # Need to access log files
 allow vault_t vault_log_t:dir { getattr search write add_name };
 allow vault_t vault_log_t:file { create append open setattr };
+
+## <desc>
+## <p>
+## Allow vault servers to send outbound DNS
+## typically used to resolve DNS.
+## </p>
+## </desc>
+gen_tunable(vault_outbound_udp_dns, false)
+tunable_policy(`vault_outbound_udp_dns',`
+  require {
+    class udp_socket { connect create getattr read setopt write };
+    type vault_t;
+  }
+  allow vault_t self:udp_socket { connect create getattr read setopt write };
+  sysnet_read_config(vault_t)
+')
+
+## <desc>
+## <p>
+## Allow vault servers to connect
+## to external HTTP servers.
+## </p>
+## </desc>
+gen_tunable(vault_outbound_http, false)
+tunable_policy(`vault_outbound_http',`
+  require {
+    type vault_t;
+  }
+  corenet_tcp_connect_http_port(vault_t)
+  miscfiles_read_generic_certs(vault_t)
+')

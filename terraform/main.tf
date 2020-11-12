@@ -135,6 +135,11 @@ data "aws_ami" "centos" {
 #   }
 # }
 
+resource "aws_kms_key" "vault" {
+  description             = "test Vault Unseal Key"
+  deletion_window_in_days = 10
+}
+
 resource "aws_security_group" "ssh" {
   name = "${var.name} sg"
   vpc_id = aws_vpc.vpc.id
@@ -185,8 +190,79 @@ resource "aws_security_group_rule" "allow_http_inbound_from_self" {
   security_group_id = aws_security_group.ssh.id
 }
 
+data "aws_iam_policy_document" "instance_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "instance_role" {
+  name        = "raft-iam-role"
+  assume_role_policy = data.aws_iam_policy_document.instance_role.json
+
+  # aws_iam_instance_profile.instance_profile in this module sets create_before_destroy to true, which means
+  # everything it depends on, including this resource, must set it as well, or you'll get cyclic dependency errors
+  # when you try to do a terraform destroy.
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_iam_instance_profile" "instance_profile" {
+  name = "raft-iam-instance-profile"
+  role        = aws_iam_role.instance_role.name
+
+  # aws_launch_configuration.launch_configuration in this module sets create_before_destroy to true, which means
+  # everything it depends on, including this resource, must set it as well, or you'll get cyclic dependency errors
+  # when you try to do a terraform destroy.
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 data "template_file" "user_data" {
   template = file("user-data-vault.sh")
+
+  vars = {
+    region      = var.region
+    kms_key_id  = aws_kms_key.vault.key_id
+  }
+}
+
+data "aws_iam_policy_document" "ec2_describe" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ec2:DescribeInstances"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    actions = [
+      "kms:DescribeKey",
+      "kms:Encrypt",
+      "kms:Decrypt",
+    ]
+
+    resources = [
+      "${aws_kms_key.vault.arn}",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "ec2_describe" {
+  name = "raft_ec2_describe"
+  role = aws_iam_role.instance_role.id
+  policy = data.aws_iam_policy_document.ec2_describe.json
 }
 
 resource "aws_instance" "instance" {
@@ -197,17 +273,28 @@ resource "aws_instance" "instance" {
   key_name = aws_key_pair.ssh.key_name
   subnet_id = aws_subnet.public.id
   vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
-  # user_data = data.template_file.user_data.rendered
+  iam_instance_profile = aws_iam_instance_profile.instance_profile.name
+  user_data = data.template_file.user_data.rendered
+
+  tags = {
+    cluster_name = "raft"
+  }
 }
 
 resource "aws_instance" "instance2" {
-  # ami = data.aws_ami.centos.id
-  ami = "ami-09f17ac4a76fd9ffe" # fedora AMI
+  ami = data.aws_ami.centos.id
+  # ami = data.aws_ami.ubuntu.id
+  # ami = "ami-09f17ac4a76fd9ffe" # fedora AMI
   instance_type = "t2.medium"
   key_name = aws_key_pair.ssh.key_name
   subnet_id = aws_subnet.public.id
   vpc_security_group_ids = ["${aws_security_group.ssh.id}"]
-  # user_data = data.template_file.user_data.rendered
+  iam_instance_profile = aws_iam_instance_profile.instance_profile.name
+  user_data = data.template_file.user_data.rendered
+
+  tags = {
+    cluster_name = "raft"
+  }
 }
 
 output "instance_ip" {
@@ -229,10 +316,6 @@ output "instance2_ip_private" {
 output "instance_az" {
   value = aws_instance.instance.availability_zone
 }
-
-# output "instance2_az" {
-#   value = aws_instance.instance2.availability_zone
-# }
 
 output "vpc_id" {
   value = aws_vpc.vpc.id
