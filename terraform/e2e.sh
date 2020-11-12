@@ -46,7 +46,7 @@ function retry {
   local -r cmd="$1"
   local -r description="$2"
 
-  for i in $(seq 1 5); do
+  for i in $(seq 1 15); do
     log_info "$description"
 
     # The boolean operations with the exit status are there to temporarily circumvent the "set -e" at the
@@ -61,7 +61,7 @@ function retry {
     sleep 10
   done;
 
-  log_error "$description failed after 5 attempts."
+  log_error "$description failed after 15 attempts."
   exit $exit_status
 }
 
@@ -322,6 +322,7 @@ function e2e {
 
   vault_list_peers $INSTANCE_IP
 
+  log_info "====================== End to End Testing Completed Successfully!"
   
 }
 
