@@ -7,13 +7,9 @@ exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-sudo yum -y install vault
+sudo yum -y install vault-1.6.0-1
 
 sudo yum -y install wget unzip tmux policycoreutils-devel setools-console rpm-build vim
-wget https://releases.hashicorp.com/vault/1.6.0-rc/vault_1.6.0-rc_linux_amd64.zip
-unzip vault_1.6.0-rc_linux_amd64.zip
-sudo mv vault /usr/bin/vault
-sudo cp /usr/bin/vault /usr/sbin/vault
 export instance_id="$(curl -s http://169.254.169.254/latest/meta-data/instance-id)"
 export internal_ip="$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)"
 export external_ip="$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)"
