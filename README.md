@@ -1,4 +1,4 @@
-# vault-selinux-policies
+# vault-selinux-policies [![CircleCI](https://circleci.com/gh/hashicorp/vault-selinux-policies.svg?style=svg)](https://circleci.com/gh/hashicorp/vault-selinux-policies)
 
 This repo contains a baseline SELinux Targeted Policy, and CircleCI scripts to package the policy into RPMs (targeting CentOS and Fedora) for [HashiCorp Vault](https://www.vaultproject.io).
 
