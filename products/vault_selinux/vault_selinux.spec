@@ -43,6 +43,13 @@ Requires(postun): policycoreutils, policycoreutils-python-utils
 BuildArch: noarch
 %endif
 
+%if 0%{?fc32}
+Requires: policycoreutils, libselinux-utils, policycoreutils-python-utils
+Requires(post): selinux-policy-targeted, policycoreutils, policycoreutils-python-utils
+Requires(postun): policycoreutils, policycoreutils-python-utils
+BuildArch: noarch
+%endif
+
 %description
 This package installs and sets up the  SELinux policy security module for vault.
 
