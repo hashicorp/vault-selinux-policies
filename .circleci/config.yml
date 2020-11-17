@@ -17,7 +17,7 @@ references:
     # fedora: &FEDORA_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora@sha256:ee55117b3058f2f12961184fae4b9c392586e400487626c6bd0d15b4eae94ecc"
     fedora: &FEDORA_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora:31"
     ubuntu: &UBUNTU_DOCKER_IMAGE "docker.mirror.hashicorp.services/circleci/buildpack-deps:bionic"
-    centos: &CENTOS_DOCKER_IMAGE "docker.mirror.hashicorp.services/centos:8"
+    centos8: &CENTOS8_DOCKER_IMAGE "docker.mirror.hashicorp.services/centos:8"
     centos7: &CENTOS7_DOCKER_IMAGE "docker.mirror.hashicorp.services/centos:7"
 
 environment: &ENVIRONMENT
@@ -25,7 +25,7 @@ environment: &ENVIRONMENT
     HC_VERSION: << pipeline.parameters.hc-version >>
     HC_PACKAGE_ITERATION: << pipeline.parameters.hc-package-iteration >>
     IMAGE_RPM_SYSTEM: *FEDORA_DOCKER_IMAGE
-    IMAGE_CENTOS_SYSTEM: *CENTOS_DOCKER_IMAGE
+    IMAGE_CENTOS8_SYSTEM: *CENTOS8_DOCKER_IMAGE
     IMAGE_CENTOS7_SYSTEM: *CENTOS7_DOCKER_IMAGE
     IMAGE_APT_SYSTEM: *UBUNTU_DOCKER_IMAGE
 
@@ -48,7 +48,7 @@ jobs:
             - run: dnf -y install make
       - when:
           condition:
-            equal: [ << parameters.host-image >>, *CENTOS_DOCKER_IMAGE ]
+            equal: [ << parameters.host-image >>, *CENTOS8_DOCKER_IMAGE ]
           steps:
             - run: yum -y install make
       - when:
@@ -70,7 +70,7 @@ jobs:
             - products/<< pipeline.parameters.hc-product >>/*.rpm
       - when:
           condition:
-            equal: [ << parameters.host-image >>, *CENTOS_DOCKER_IMAGE ]
+            equal: [ << parameters.host-image >>, *CENTOS8_DOCKER_IMAGE ]
           steps:
             - persist_to_workspace:
                 root: .
@@ -96,7 +96,7 @@ workflows:
       - package:
           matrix:
             parameters:
-              host-image: [*FEDORA_DOCKER_IMAGE, *CENTOS_DOCKER_IMAGE, *CENTOS7_DOCKER_IMAGE]
+              host-image: [*FEDORA_DOCKER_IMAGE, *CENTOS8_DOCKER_IMAGE, *CENTOS7_DOCKER_IMAGE]
               # host-image: [*CENTOS_DOCKER_IMAGE]
           # filters:
           #   branches:
