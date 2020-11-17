@@ -103,6 +103,8 @@ jobs:
           command: |
             ./products/<< pipeline.parameters.hc-product >>/ci/validate.sh
   collect-packages:
+    docker:
+      - image: *IMAGE_APT_SYSTEM
     environment:
       <<: *ENVIRONMENT
     steps:
