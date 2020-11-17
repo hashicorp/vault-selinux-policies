@@ -91,6 +91,9 @@ jobs:
                 paths:
                   - products/<< pipeline.parameters.hc-product >>/ci
   validate-packages:
+    parameters:
+      target-image:
+        type: string
     machine:
       image: ubuntu-1604:201903-01
     environment:
@@ -101,7 +104,7 @@ jobs:
       - run:
           name: Validate packages
           command: |
-            ./products/<< pipeline.parameters.hc-product >>/ci/validate.sh
+            TARGET_IMAGE=<< parameters.target-image >> ./products/<< pipeline.parameters.hc-product >>/ci/validate.sh
   collect-packages:
     docker:
       - image: *UBUNTU_DOCKER_IMAGE
@@ -121,6 +124,7 @@ workflows:
   packaging:
     jobs:
       - package:
+          name: package-<< matrix.host-image >>
           matrix:
             parameters:
               host-image: [*FEDORA31_DOCKER_IMAGE, *FEDORA32_DOCKER_IMAGE, *FEDORA33_DOCKER_IMAGE, *CENTOS8_DOCKER_IMAGE, *CENTOS7_DOCKER_IMAGE]
@@ -129,8 +133,12 @@ workflows:
           #   branches:
           #     only: dev
       - validate-packages:
+          name: validate-package-<< matrix.target-image >>
+          matrix:
+            parameters:
+              target-image: [*FEDORA31_DOCKER_IMAGE, *FEDORA32_DOCKER_IMAGE, *FEDORA33_DOCKER_IMAGE, *CENTOS8_DOCKER_IMAGE, *CENTOS7_DOCKER_IMAGE]
           requires:
-            - package
+            - package-<< matrix.target-image >>
       - collect-packages:
           requires:
             - validate-packages
