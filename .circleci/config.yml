@@ -40,6 +40,7 @@ jobs:
     environment:
       <<: *ENVIRONMENT
     steps:
+      - checkout
       - persist_to_workspace:
           root: .
           paths:
