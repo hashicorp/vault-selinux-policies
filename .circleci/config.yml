@@ -14,7 +14,8 @@ parameters:
 
 references:
   docker-images:
-    fedora: &FEDORA_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora@sha256:ee55117b3058f2f12961184fae4b9c392586e400487626c6bd0d15b4eae94ecc"
+    # fedora: &FEDORA_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora@sha256:ee55117b3058f2f12961184fae4b9c392586e400487626c6bd0d15b4eae94ecc"
+    fedora: &FEDORA_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora:31"
     ubuntu: &UBUNTU_DOCKER_IMAGE "docker.mirror.hashicorp.services/circleci/buildpack-deps:bionic"
     centos: &CENTOS_DOCKER_IMAGE "docker.mirror.hashicorp.services/centos:8"
     centos7: &CENTOS7_DOCKER_IMAGE "docker.mirror.hashicorp.services/centos:7"
