@@ -104,7 +104,7 @@ jobs:
             ./products/<< pipeline.parameters.hc-product >>/ci/validate.sh
   collect-packages:
     docker:
-      - image: *IMAGE_APT_SYSTEM
+      - image: *UBUNTU_DOCKER_IMAGE
     environment:
       <<: *ENVIRONMENT
     steps:
