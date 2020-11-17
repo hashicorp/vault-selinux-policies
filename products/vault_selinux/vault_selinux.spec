@@ -101,6 +101,9 @@ exit 0
 
 
 %changelog
+* Tue Nov 17 2020 Christian Frichot <cfrichot@hashicorp> 0.1.4-1
+- Packaging for Centos7, Centos8, Fedora31, Fedora32, Fedora33
+
 * Thu Nov 12 2020 Christian Frichot <cfrichot@hashicorp.com> 0.1.3-1
 - Added booleans for outbound udp/dns and http
 
