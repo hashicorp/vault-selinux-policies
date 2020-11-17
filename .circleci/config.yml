@@ -34,6 +34,16 @@ environment: &ENVIRONMENT
     IMAGE_APT_SYSTEM: *UBUNTU_DOCKER_IMAGE
 
 jobs:
+  persist-ci-script:
+    docker:
+      - image: *UBUNTU_DOCKER_IMAGE
+    environment:
+      <<: *ENVIRONMENT
+    steps:
+      - persist_to_workspace:
+          root: .
+          paths:
+            - products/<< pipeline.parameters.hc-product >>/ci
   package:
     parameters:
       host-image:
@@ -82,14 +92,14 @@ jobs:
           root: .
           paths:
             - products/<< pipeline.parameters.hc-product >>/*.rpm
-      - when:
-          condition:
-            equal: [ << parameters.host-image >>, *CENTOS8_DOCKER_IMAGE ]
-          steps:
-            - persist_to_workspace:
-                root: .
-                paths:
-                  - products/<< pipeline.parameters.hc-product >>/ci
+      # - when:
+      #     condition:
+      #       equal: [ << parameters.host-image >>, *CENTOS8_DOCKER_IMAGE ]
+      #     steps:
+      #       - persist_to_workspace:
+      #           root: .
+      #           paths:
+      #             - products/<< pipeline.parameters.hc-product >>/ci
   validate-packages:
     parameters:
       target-image:
@@ -123,12 +133,15 @@ workflows:
   version: 2
   packaging:
     jobs:
+      - persist-ci-script
       - package:
           name: package-<< matrix.host-image >>
           matrix:
             parameters:
               host-image: [*FEDORA31_DOCKER_IMAGE, *FEDORA32_DOCKER_IMAGE, *FEDORA33_DOCKER_IMAGE, *CENTOS8_DOCKER_IMAGE, *CENTOS7_DOCKER_IMAGE]
               # host-image: [*CENTOS_DOCKER_IMAGE]
+          requires:
+            - persist-ci-script
           # filters:
           #   branches:
           #     only: dev
