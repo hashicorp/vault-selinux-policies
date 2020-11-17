@@ -22,6 +22,13 @@ Source0:	vault.pp
 Source1:	vault.if
 Source2:	vault_selinux.8
 
+%if 0%{?el7}
+Requires: policycoreutils, libselinux-utils
+Requires(post): selinux-policy-targeted, policycoreutils
+Requires(postun): policycoreutils
+BuildArch: noarch
+%endif
+
 %if 0%{?el8}
 Requires: policycoreutils, libselinux-utils
 Requires(post): selinux-policy-targeted, policycoreutils
@@ -30,6 +37,20 @@ BuildArch: noarch
 %endif
 
 %if 0%{?fc31}
+Requires: policycoreutils, libselinux-utils, policycoreutils-python-utils
+Requires(post): selinux-policy-targeted, policycoreutils, policycoreutils-python-utils
+Requires(postun): policycoreutils, policycoreutils-python-utils
+BuildArch: noarch
+%endif
+
+%if 0%{?fc32}
+Requires: policycoreutils, libselinux-utils, policycoreutils-python-utils
+Requires(post): selinux-policy-targeted, policycoreutils, policycoreutils-python-utils
+Requires(postun): policycoreutils, policycoreutils-python-utils
+BuildArch: noarch
+%endif
+
+%if 0%{?fc33}
 Requires: policycoreutils, libselinux-utils, policycoreutils-python-utils
 Requires(post): selinux-policy-targeted, policycoreutils, policycoreutils-python-utils
 Requires(postun): policycoreutils, policycoreutils-python-utils
@@ -80,6 +101,9 @@ exit 0
 
 
 %changelog
+* Tue Nov 17 2020 Christian Frichot <cfrichot@hashicorp> 0.1.4-1
+- Packaging for Centos7, Centos8, Fedora31, Fedora32, Fedora33
+
 * Thu Nov 12 2020 Christian Frichot <cfrichot@hashicorp.com> 0.1.3-1
 - Added booleans for outbound udp/dns and http
 
