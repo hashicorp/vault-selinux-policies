@@ -11,7 +11,7 @@ if ! [ -z "${CI:-""}" ]; then
   chmod a+rwx -R ./
 fi
 
-# Run CentOS rpm validation
+# Run CentOS8 rpm validation
 CENTOS_ID=$(docker run -d -v $WORKDIR:/app -e HC_PRODUCT=$HC_PRODUCT -e HC_VERSION=$HC_VERSION \
   --entrypoint="" -w="/app" --privileged $IMAGE_CENTOS_SYSTEM /usr/sbin/init)
 # Wait for CentOS to spin up
@@ -26,11 +26,12 @@ docker exec $CENTOS_ID yum remove -y vault_selinux
 
 docker stop $CENTOS_ID
 
+# Run CentOS7 rpm validation
 CENTOS_ID=$(docker run -d -v $WORKDIR:/app -e HC_PRODUCT=$HC_PRODUCT -e HC_VERSION=$HC_VERSION \
   --entrypoint="" -w="/app" --privileged $IMAGE_CENTOS7_SYSTEM /usr/sbin/init)
 # Wait for CentOS to spin up
 sleep 1
-docker exec $CENTOS_ID yum install -y libselinux-utils policycoreutils policycoreutils-python-utils selinux-policy-targeted
+docker exec $CENTOS_ID yum install -y libselinux-utils policycoreutils policycoreutils-python selinux-policy-targeted
 docker exec $CENTOS_ID yum install -y /app/$(ls products/*/*el7.noarch.rpm)
 
 docker exec $CENTOS_ID bash -c 'semanage module -l | grep vault'
