@@ -4,6 +4,12 @@ This repo contains a baseline SELinux Targeted Policy, and CircleCI scripts to p
 
 It is _not_ recommended to run this in Production without extensive testing first!
 
+-----
+
+**Please note**: We take Vault's security and our users' trust very seriously. If you believe you have found a security issue in Vault, _please responsibly disclose_ by contacting us at [security@hashicorp.com](mailto:security@hashicorp.com).
+
+-----
+
 ## Overview
 
 This repo holds the raw SELinux policy files, the packaging scripts _and_ validation scripts to package and validate via CircleCI.
@@ -14,12 +20,13 @@ This repo holds the raw SELinux policy files, the packaging scripts _and_ valida
 * The SELinux policies do allow fairly open outbound network traffic, although not outbound HTTP access by default.
 * The SELinux policies haven't been tested with Vault+Consul, or other storage engines, except for Integrated Storage.
 * The current policy is in Enforced Mode (which will block and audit), but can be edited into Permissive Mode (which will audit only).
+* The packaged installers have only been tested with CentOS7, CentOS8, Fedora 31, Fedora 32 and Fedora 33.
 
-### Layout
+## Getting Started
 
-The [products/vault_selinux/](products/vault_selinux/) folder contains the raw SELinux config files, plus [package.sh](products/vault_selinux/package.sh). This script gets executed by [circle](.circleci/config.yml).
+If you've installed Vault using our [Linux Packages](https://learn.hashicorp.com/tutorials/vault/getting-started-install) then the quickest way to install the Targeted SELinux Policy is to download the RPM for your distribution from https://github.com/hashicorp/vault-selinux-policies/releases and install that.
 
-The [products/vault_selinux/](products/vault_selinux/) folder contains the [ci/validate.sh](products/vault_selinux/ci/validate.sh) script. This gets executed by [circle](.circleci/config.yml) too.
+If you have a customized Vault installation, then you will need to clone this repo and read on.
 
 ### Booleans
 
@@ -30,19 +37,25 @@ While the current baseline provides fairly open access, there are some features 
 
 To enable the booleans:
 
-```
+```sh
 sudo setsebool vault_outbound_udp_dns on
 sudo setsebool vault_outbound_http on
 ```
 
 If you'd like to persist these setting:
 
-```
+```sh
 sudo setsebool -P vault_outbound_udp_dns on
 sudo setsebool -P vault_outbound_http on
 ```
 
 ## Editing the source
+
+### Layout
+
+The [products/vault_selinux/](products/vault_selinux/) folder contains the raw SELinux config files, plus [package.sh](products/vault_selinux/package.sh). This script gets executed by [circle](.circleci/config.yml).
+
+The [products/vault_selinux/](products/vault_selinux/) folder contains the [ci/validate.sh](products/vault_selinux/ci/validate.sh) script. This gets executed by [circle](.circleci/config.yml) too.
 
 To edit the underlying SELinux policies, edit the `vault*` files in [products/vault_selinux/](products/vault_selinux/).
 
@@ -66,7 +79,7 @@ This has only been tested on CentOS and Fedora, and requires some pre-requisites
 
 Install Vault:
 
-```
+```sh
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
 sudo yum -y install vault
@@ -74,13 +87,13 @@ sudo yum -y install vault
 
 Install SELinux Policy development pre-requisites:
 
-```
+```sh
 sudo yum -y install policycoreutils-devel setools-console rpm-build selinux-policy-devel selinux-policy-targeted
 ```
 
 Clone this repo, update versions, then run the `vault.sh` script.
 
-```
+```sh
 cd products/vault_selinux
 sed -i "s^#VERSION#^0.1.1^g" vault.te
 sed -i "s^#VERSION#^0.1.1^g" vault_selinux.spec
@@ -93,7 +106,7 @@ To re-install, after making changes to the SELinux files, you can re-run this sc
 
 Install Vault:
 
-```
+```sh
 sudo dnf install -y dnf-plugins-core
 sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
 sudo dnf -y install vault
@@ -101,13 +114,13 @@ sudo dnf -y install vault
 
 Install SELinux Policy development pre-requisites:
 
-```
+```sh
 sudo dnf -y install policycoreutils-devel setools-console rpm-build
 ```
 
 Clone this repo, update versions, then run the `vault.sh` script.
 
-```
+```sh
 cd products/vault_selinux
 sed -i "s^#VERSION#^0.1.1^g" vault.te
 sed -i "s^#VERSION#^0.1.1^g" vault_selinux.spec
@@ -120,14 +133,14 @@ To re-install, after making changes to the SELinux files, you can re-run this sc
 
 To test that the RPM packages are installable the `terraform` directory contains logic to spin up 2 Centos instances.
 
-```
+```sh
 cd terraform
 make up
 ```
 
 SSH to the instances then run:
 
-```
+```sh
 sudo cloud-init status --wait
 ```
 
@@ -137,13 +150,13 @@ SCP the appropriate RPM to the instances.
 
 Then from the instances (or dnf/yum install), for example:
 
-```
+```sh
 sudo rpm -ivh vault_selinux-1.1-1.el7.noarch.rpm
 ```
 
 You can check that the policy has applied properly by checking appropriate `vault_t` contexts in:
 
-```
+```sh
 ls -alZ /opt/vault
 ls -alZ /var/log/vault
 ls -alZ /usr/sbin/vault
@@ -152,38 +165,38 @@ ls -alZ /etc/vault.d
 
 Or by running `semanage` commands, similar to our [validation](products/vault_selinux/ci/validate.sh) logic:
 
-```
+```sh
 sudo semanage module -l | grep vault
 sudo semanage port -l | grep vault_cluster_port_t
 ```
 
 You should then be able to start the vault server on the instance:
 
-```
+```sh
 sudo systemctl start vault.service
 ```
 
 From the centos user you can:
-```
+```sh
 export VAULT_ADDR=http://127.0.0.1:8200
 vault status
 ```
 
 Hopefully, if you tail the audit log you shouldn't see AVC errors for vault:
 
-```
+```sh
 sudo tail -f /var/log/audit/audit.log | grep vault
 ```
 
 After you've initialized and unsealed vault you can also enable the audit engine to write to /var/log/vault/vault.log
 
-```
+```sh
 vault audit enable file file_path=/var/log/vault/vault.log
 ```
 
 Don't forget to tear down your infra after:
 
-```
+```sh
 make down
 ```
 
