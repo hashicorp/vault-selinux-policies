@@ -22,6 +22,13 @@ Source0:	vault.pp
 Source1:	vault.if
 Source2:	vault_selinux.8
 
+%if 0%{?el7}
+Requires: policycoreutils, libselinux-utils
+Requires(post): selinux-policy-targeted, policycoreutils
+Requires(postun): policycoreutils
+BuildArch: noarch
+%endif
+
 %if 0%{?el8}
 Requires: policycoreutils, libselinux-utils
 Requires(post): selinux-policy-targeted, policycoreutils
