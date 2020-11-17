@@ -96,7 +96,7 @@ if [[ $TARGET_IMAGE == $IMAGE_F33_SYSTEM ]]; then
   # Wait for Fedora to spin up
   sleep 1
   docker exec $FEDORA_ID dnf install -y libselinux-utils policycoreutils policycoreutils-python-utils selinux-policy-targeted
-  docker exec $FEDORA_ID dnf install -y /app/$(ls products/*/*fc32.noarch.rpm)
+  docker exec $FEDORA_ID dnf install -y /app/$(ls products/*/*fc33.noarch.rpm)
 
   docker exec $FEDORA_ID bash -c 'semanage module -l | grep vault'
   docker exec $FEDORA_ID bash -c 'semanage port -l | grep vault_cluster_port_t'
