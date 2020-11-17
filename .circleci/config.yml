@@ -14,8 +14,9 @@ parameters:
 
 references:
   docker-images:
-    # fedora: &FEDORA_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora@sha256:ee55117b3058f2f12961184fae4b9c392586e400487626c6bd0d15b4eae94ecc"
-    fedora: &FEDORA_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora:31"
+    # fedora: &FEDORA31_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora@sha256:ee55117b3058f2f12961184fae4b9c392586e400487626c6bd0d15b4eae94ecc"
+    fedora31: &FEDORA31_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora:31"
+    fedora32: &FEDORA32_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora:32"
     ubuntu: &UBUNTU_DOCKER_IMAGE "docker.mirror.hashicorp.services/circleci/buildpack-deps:bionic"
     centos8: &CENTOS8_DOCKER_IMAGE "docker.mirror.hashicorp.services/centos:8"
     centos7: &CENTOS7_DOCKER_IMAGE "docker.mirror.hashicorp.services/centos:7"
@@ -24,7 +25,8 @@ environment: &ENVIRONMENT
     HC_PRODUCT: << pipeline.parameters.hc-product >>
     HC_VERSION: << pipeline.parameters.hc-version >>
     HC_PACKAGE_ITERATION: << pipeline.parameters.hc-package-iteration >>
-    IMAGE_RPM_SYSTEM: *FEDORA_DOCKER_IMAGE
+    IMAGE_F31_SYSTEM: *FEDORA31_DOCKER_IMAGE
+    IMAGE_F32_SYSTEM: *FEDORA32_DOCKER_IMAGE
     IMAGE_CENTOS8_SYSTEM: *CENTOS8_DOCKER_IMAGE
     IMAGE_CENTOS7_SYSTEM: *CENTOS7_DOCKER_IMAGE
     IMAGE_APT_SYSTEM: *UBUNTU_DOCKER_IMAGE
@@ -43,7 +45,12 @@ jobs:
       # The below is required because I'm building on a generic CentOS and Fedora container
       - when:
           condition:
-            equal: [ << parameters.host-image >>, *FEDORA_DOCKER_IMAGE ]
+            equal: [ << parameters.host-image >>, *FEDORA31_DOCKER_IMAGE ]
+          steps:
+            - run: dnf -y install make
+      - when:
+          condition:
+            equal: [ << parameters.host-image >>, *FEDORA32_DOCKER_IMAGE ]
           steps:
             - run: dnf -y install make
       - when:
@@ -96,7 +103,7 @@ workflows:
       - package:
           matrix:
             parameters:
-              host-image: [*FEDORA_DOCKER_IMAGE, *CENTOS8_DOCKER_IMAGE, *CENTOS7_DOCKER_IMAGE]
+              host-image: [*FEDORA31_DOCKER_IMAGE, *FEDORA32_DOCKER_IMAGE, *CENTOS8_DOCKER_IMAGE, *CENTOS7_DOCKER_IMAGE]
               # host-image: [*CENTOS_DOCKER_IMAGE]
           # filters:
           #   branches:
