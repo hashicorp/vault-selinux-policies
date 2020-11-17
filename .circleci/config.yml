@@ -131,3 +131,6 @@ workflows:
       - validate-packages:
           requires:
             - package
+      - collect-packages:
+          requires:
+            - validate-packages
