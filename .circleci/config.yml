@@ -7,7 +7,7 @@ parameters:
     default: "vault_selinux"
   hc-version:
     type: string
-    default: "0.1.4"
+    default: "0.1.5"
   hc-package-iteration:
     type: string
     default: "1"

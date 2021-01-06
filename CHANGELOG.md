@@ -1,3 +1,10 @@
+## 0.1.5
+### Jan 6th, 2021
+
+CHANGES:
+
+* Simplified local testing with the `local-package` Makefile target
+
 ## 0.1.4
 ### Nov 17th, 2020
 

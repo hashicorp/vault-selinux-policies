@@ -75,56 +75,12 @@ These jobs will save RPM artifacts in the package steps, one for CentOS, and one
 
 This has only been tested on CentOS and Fedora, and requires some pre-requisites. The AWS steps below offer a more thorough example of how to test this on CentOS and Fedora.
 
-### CentOS
+First, clone this repo.
 
-Install Vault:
-
-```sh
-sudo yum install -y yum-utils
-sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-sudo yum -y install vault
-```
-
-Install SELinux Policy development pre-requisites:
+Then:
 
 ```sh
-sudo yum -y install policycoreutils-devel setools-console rpm-build selinux-policy-devel selinux-policy-targeted
-```
-
-Clone this repo, update versions, then run the `vault.sh` script.
-
-```sh
-cd products/vault_selinux
-sed -i "s^#VERSION#^0.1.1^g" vault.te
-sed -i "s^#VERSION#^0.1.1^g" vault_selinux.spec
-sudo ./vault.sh
-```
-
-To re-install, after making changes to the SELinux files, you can re-run this script.
-
-### Fedora
-
-Install Vault:
-
-```sh
-sudo dnf install -y dnf-plugins-core
-sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
-sudo dnf -y install vault
-```
-
-Install SELinux Policy development pre-requisites:
-
-```sh
-sudo dnf -y install policycoreutils-devel setools-console rpm-build
-```
-
-Clone this repo, update versions, then run the `vault.sh` script.
-
-```sh
-cd products/vault_selinux
-sed -i "s^#VERSION#^0.1.1^g" vault.te
-sed -i "s^#VERSION#^0.1.1^g" vault_selinux.spec
-sudo ./vault.sh
+sudo make local-package
 ```
 
 To re-install, after making changes to the SELinux files, you can re-run this script.
