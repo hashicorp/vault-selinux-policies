@@ -3,22 +3,30 @@ set -xeu pipefail
 
 VERSION=${HC_VERSION}
 PACKAGE_ITERATION=${HC_PACKAGE_ITERATION:-1}
+LOCAL=${LOCAL_PACKAGE:-0}
 
 PRODUCT_NAME="vault_selinux"
 
 OUTPUT_PATH=$(pwd)
-# Create temporary workspace
-echo "Creating temporary workspace"
-mkdir pkg_tmp
 
-cp ./vault.fc ./pkg_tmp/vault.fc
-cp ./vault.if ./pkg_tmp/vault.if
-cp ./vault.sh ./pkg_tmp/vault.sh
-cp ./vault.te ./pkg_tmp/vault.te
-cp ./vault_selinux.spec ./pkg_tmp/vault_selinux.spec
+if [[ "$LOCAL" == "1" ]]; then
+  echo "Performing a local package install"
+  VERSION="0.0.1"
+else
+  # Create temporary workspace
+  echo "Performing CI package install"
+  echo "Creating temporary workspace"
+  mkdir pkg_tmp
 
-PACKAGE_DIR=$(cd pkg_tmp; pwd)
-cd $PACKAGE_DIR
+  cp ./vault.fc ./pkg_tmp/vault.fc
+  cp ./vault.if ./pkg_tmp/vault.if
+  cp ./vault.sh ./pkg_tmp/vault.sh
+  cp ./vault.te ./pkg_tmp/vault.te
+  cp ./vault_selinux.spec ./pkg_tmp/vault_selinux.spec
+
+  PACKAGE_DIR=$(cd pkg_tmp; pwd)
+  cd $PACKAGE_DIR
+fi
 
 # @TODO: I'm sure there are better ways to build RPM packages for Fedora & Centos
 # Currently I'm doing this in two different containers, with some %if logic in the
@@ -62,14 +70,18 @@ elif [[ $OS == *"Fedora"* ]]; then
 fi
 
 echo "Updating #VERSION# in vault.te and vault_selinux.spec"
-sed -i "s^#VERSION#^${HC_VERSION}^g" vault.te
-sed -i "s^#VERSION#^${HC_VERSION}^g" vault_selinux.spec
+sed -i "s^#VERSION#^${VERSION}^g" vault.te
+sed -i "s^#VERSION#^${VERSION}^g" vault_selinux.spec
 
 # Run the sepolicy builder
-sh ./vault.sh
-cp *.rpm $OUTPUT_PATH
-cp noarch/*.rpm $OUTPUT_PATH
+if [[ "$LOCAL" == "1" ]]; then
+  sudo sh ./vault.sh
+else
+  sh ./vault.sh
+  cp *.rpm $OUTPUT_PATH
+  cp noarch/*.rpm $OUTPUT_PATH
 
-# Cleanup
-cd $OUTPUT_PATH
-rm -rf $PACKAGE_DIR
+  # Cleanup
+  cd $OUTPUT_PATH
+  rm -rf $PACKAGE_DIR
+fi
