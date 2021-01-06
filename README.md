@@ -6,7 +6,7 @@ It is _not_ recommended to run this in Production without extensive testing firs
 
 -----
 
-**Please note**: We take Vault's security and our users' trust very seriously. If you believe you have found a security issue in Vault, _please responsibly disclose_ by contacting us at [security@hashicorp.com](mailto:security@hashicorp.com).
+**Please note**: We take Vault's security and our users' trust very seriously. If you believe you have found a security issue in Vault or these SELinux Policies, _please responsibly disclose_ by contacting us at [security@hashicorp.com](mailto:security@hashicorp.com).
 
 -----
 
