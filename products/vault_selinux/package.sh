@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -xeu pipefail
 
-VERSION=${HC_VERSION}
+HC_VERSION=${HC_VERSION}
 PACKAGE_ITERATION=${HC_PACKAGE_ITERATION:-1}
 LOCAL=${LOCAL_PACKAGE:-0}
 
@@ -11,7 +11,7 @@ OUTPUT_PATH=$(pwd)
 
 if [[ "$LOCAL" == "1" ]]; then
   echo "Performing a local package install"
-  VERSION="0.0.1"
+  HC_VERSION="0.0.1"
 else
   # Create temporary workspace
   echo "Performing CI package install"
@@ -70,8 +70,8 @@ elif [[ $OS == *"Fedora"* ]]; then
 fi
 
 echo "Updating #VERSION# in vault.te and vault_selinux.spec"
-sed -i "s^#VERSION#^${VERSION}^g" vault.te
-sed -i "s^#VERSION#^${VERSION}^g" vault_selinux.spec
+sed -i "s^#VERSION#^${HC_VERSION}^g" vault.te
+sed -i "s^#VERSION#^${HC_VERSION}^g" vault_selinux.spec
 
 # Run the sepolicy builder
 if [[ "$LOCAL" == "1" ]]; then
