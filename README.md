@@ -73,7 +73,7 @@ These jobs will save RPM artifacts in the package steps, one for CentOS, and one
 
 ## Testing locally
 
-This has only been tested on CentOS and Fedora, and requires some pre-requisites. The AWS steps below offer a more thorough example of how to test this on CentOS and Fedora.
+This has only been tested on CentOS and Fedora, and requires some prerequisites. The AWS steps below offer a more thorough example of how to test this on CentOS and Fedora.
 
 First, clone this repo.
 
