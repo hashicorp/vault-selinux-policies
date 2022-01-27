@@ -23,7 +23,7 @@ files_type(vault_conf_t)
 type vault_sys_content_t;
 files_type(vault_sys_content_t)
 
-# Mapped to the /var/log/vault folder
+# Mapped to the /var/log/vault folder and /var/log/vault_audit.log
 type vault_log_t;
 files_type(vault_log_t)
 
@@ -45,9 +45,10 @@ require {
 	type vault_conf_t;
 	type vault_sys_content_t;
 	type vault_log_t;
+	type kernel_t; # Needed for /dev/log
 	class netlink_route_socket { bind create getattr nlmsg_read read write };
 	class tcp_socket { accept bind connect create getattr getopt listen setopt read write };
-	class unix_dgram_socket { bind create getattr setopt connect };
+	class unix_dgram_socket { bind create getattr setopt connect sendto };
 	class file { create getattr lock map open read write };
 	class dir { add_name create getattr open read write search };
 }
@@ -59,8 +60,10 @@ allow vault_t self:fifo_file rw_fifo_file_perms;
 allow vault_t self:unix_stream_socket create_stream_socket_perms;
 # and network sockets too
 allow vault_t self:netlink_route_socket { bind create getattr nlmsg_read };
-allow vault_t self:unix_dgram_socket { bind create getattr setopt connect };
+allow vault_t self:unix_dgram_socket { bind create getattr setopt connect sendto };
 allow vault_t self:tcp_socket { accept bind create getattr listen setopt read write };
+# Allow to write to /dev/log
+allow vault_t kernel_t:unix_dgram_socket sendto;
 # allow outbound network connectivity (for node to node comms)
 allow vault_t self:tcp_socket { connect getopt };
 
