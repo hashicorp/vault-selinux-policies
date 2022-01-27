@@ -142,6 +142,9 @@ allow vault_t vault_sys_content_t:file { create getattr lock map open read write
 allow vault_t vault_log_t:dir { getattr search write add_name };
 allow vault_t vault_log_t:file { create append open setattr };
 
+# Needs this for logging
+logging_create_devlog_dev(vault_t)
+
 ## <desc>
 ## <p>
 ## Allow vault servers to send outbound DNS
