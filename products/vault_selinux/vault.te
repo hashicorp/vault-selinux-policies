@@ -46,6 +46,7 @@ require {
 	type vault_sys_content_t;
 	type vault_log_t;
 	type kernel_t; # Needed for /dev/log
+	type unreserved_port_t;
 	class netlink_route_socket { bind create getattr nlmsg_read read write };
 	class tcp_socket { accept bind connect create getattr getopt listen setopt read write };
 	class unix_dgram_socket { bind create getattr setopt connect sendto };
@@ -62,6 +63,7 @@ allow vault_t self:unix_stream_socket create_stream_socket_perms;
 allow vault_t self:netlink_route_socket { bind create getattr nlmsg_read };
 allow vault_t self:unix_dgram_socket { bind create getattr setopt connect sendto };
 allow vault_t self:tcp_socket { accept bind create getattr listen setopt read write };
+allow vault_t unreserved_port_t:tcp_socket name_connect;
 # Allow to write to /dev/log
 allow vault_t kernel_t:unix_dgram_socket sendto;
 # allow outbound network connectivity (for node to node comms)
