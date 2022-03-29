@@ -6,6 +6,7 @@ restorecon -R -F -v -i /usr/bin/vault; \
 restorecon -R -F -v -i /etc/vault.d; \
 restorecon -R -F -v -i /opt/vault; \
 restorecon -R -F -v -i /var/log/vault; \
+restorecon -R -F -v -i /var/log/vault_audit.log; \
 
 %define relabel_port() \
 semanage port -a -t vault_cluster_port_t -p tcp 8201; \
