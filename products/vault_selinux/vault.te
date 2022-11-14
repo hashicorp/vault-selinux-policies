@@ -46,6 +46,7 @@ require {
 	type vault_sys_content_t;
 	type vault_log_t;
 	type kernel_t; # Needed for /dev/log
+        type init_t; # Needed for systemD to read vault.env
 	type unreserved_port_t;
 	class netlink_route_socket { bind create getattr nlmsg_read read write };
 	class tcp_socket { accept bind connect create getattr getopt listen setopt read write };
@@ -61,7 +62,7 @@ allow vault_t self:fifo_file rw_fifo_file_perms;
 allow vault_t self:unix_stream_socket create_stream_socket_perms;
 # and network sockets too
 allow vault_t self:netlink_route_socket { bind create getattr nlmsg_read };
-allow vault_t self:unix_dgram_socket { bind create getattr setopt connect sendto };
+allow vault_t self:unix_dgram_socket { bind create getattr setopt connect sendto write };
 allow vault_t self:tcp_socket { accept bind create getattr listen setopt read write };
 allow vault_t unreserved_port_t:tcp_socket name_connect;
 # Allow to write to /dev/log
@@ -138,6 +139,8 @@ corecmd_exec_bin(vault_t)
 ###  Allows caller to read system state information in /proc.
 kernel_read_system_state(vault_t)
 
+# Need to allow systemD access to read vault.env
+allow init_t vault_conf_t:file { read open };
 
 # Need to access data files
 allow vault_t vault_sys_content_t:dir { add_name create getattr open read write search };
