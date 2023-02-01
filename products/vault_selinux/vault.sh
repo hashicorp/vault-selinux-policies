@@ -1,4 +1,7 @@
 #!/bin/sh -e
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 
 DIRNAME=`dirname $0`
 cd $DIRNAME
