@@ -17,11 +17,11 @@ parameters:
 
 references:
   docker-images:
-    # fedora: &FEDORA31_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora@sha256:ee55117b3058f2f12961184fae4b9c392586e400487626c6bd0d15b4eae94ecc"
-    fedora31: &FEDORA31_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora:31"
-    fedora32: &FEDORA32_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora:32"
-    fedora33: &FEDORA33_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora:33"
+    fedora35: &FEDORA35_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora:35"
+    fedora36: &FEDORA36_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora:36"
+    fedora37: &FEDORA37_DOCKER_IMAGE "docker.mirror.hashicorp.services/fedora:37"
     ubuntu: &UBUNTU_DOCKER_IMAGE "docker.mirror.hashicorp.services/circleci/buildpack-deps:bionic"
+    centos9: &CENTOS9_DOCKER_IMAGE "hub.docker.com/library/rockylinux:9"
     centos8: &CENTOS8_DOCKER_IMAGE "docker.mirror.hashicorp.services/centos:8"
     centos7: &CENTOS7_DOCKER_IMAGE "docker.mirror.hashicorp.services/centos:7"
 
@@ -29,9 +29,10 @@ environment: &ENVIRONMENT
     HC_PRODUCT: << pipeline.parameters.hc-product >>
     HC_VERSION: << pipeline.parameters.hc-version >>
     HC_PACKAGE_ITERATION: << pipeline.parameters.hc-package-iteration >>
-    IMAGE_F31_SYSTEM: *FEDORA31_DOCKER_IMAGE
-    IMAGE_F32_SYSTEM: *FEDORA32_DOCKER_IMAGE
-    IMAGE_F33_SYSTEM: *FEDORA33_DOCKER_IMAGE
+    IMAGE_F35_SYSTEM: *FEDORA35_DOCKER_IMAGE
+    IMAGE_F36_SYSTEM: *FEDORA36_DOCKER_IMAGE
+    IMAGE_F37_SYSTEM: *FEDORA37_DOCKER_IMAGE
+    IMAGE_CENTOS9_SYSTEM: *CENTOS9_DOCKER_IMAGE
     IMAGE_CENTOS8_SYSTEM: *CENTOS8_DOCKER_IMAGE
     IMAGE_CENTOS7_SYSTEM: *CENTOS7_DOCKER_IMAGE
     IMAGE_APT_SYSTEM: *UBUNTU_DOCKER_IMAGE
@@ -61,24 +62,29 @@ jobs:
       # The below is required because I'm building on a generic CentOS and Fedora container
       - when:
           condition:
-            equal: [ << parameters.host-image >>, *FEDORA31_DOCKER_IMAGE ]
+            equal: [ << parameters.host-image >>, *FEDORA35_DOCKER_IMAGE ]
           steps:
             - run: dnf -y install make
       - when:
           condition:
-            equal: [ << parameters.host-image >>, *FEDORA32_DOCKER_IMAGE ]
+            equal: [ << parameters.host-image >>, *FEDORA36_DOCKER_IMAGE ]
           steps:
             - run: dnf -y install make
       - when:
           condition:
-            equal: [ << parameters.host-image >>, *FEDORA33_DOCKER_IMAGE ]
+            equal: [ << parameters.host-image >>, *FEDORA37_DOCKER_IMAGE ]
+          steps:
+            - run: dnf -y install make
+      - when:
+          condition:
+            equal: [ << parameters.host-image >>, *CENTOS9_DOCKER_IMAGE ]
           steps:
             - run: dnf -y install make
       - when:
           condition:
             equal: [ << parameters.host-image >>, *CENTOS8_DOCKER_IMAGE ]
           steps:
-            - run: yum -y install make
+            - run: dnf -y install make
       - when:
           condition:
             equal: [ << parameters.host-image >>, *CENTOS7_DOCKER_IMAGE ]
@@ -142,8 +148,7 @@ workflows:
           name: package-<< matrix.host-image >>
           matrix:
             parameters:
-              host-image: [*FEDORA31_DOCKER_IMAGE, *FEDORA32_DOCKER_IMAGE, *FEDORA33_DOCKER_IMAGE, *CENTOS8_DOCKER_IMAGE, *CENTOS7_DOCKER_IMAGE]
-              # host-image: [*CENTOS_DOCKER_IMAGE]
+              host-image: [*FEDORA35_DOCKER_IMAGE, *FEDORA36_DOCKER_IMAGE, *FEDORA37_DOCKER_IMAGE, *CENTOS9_DOCKER_IMAGE, *CENTOS8_DOCKER_IMAGE, *CENTOS7_DOCKER_IMAGE]
           requires:
             - persist-ci-script
           # filters:
@@ -153,7 +158,7 @@ workflows:
           name: validate-package-<< matrix.target-image >>
           matrix:
             parameters:
-              target-image: [*FEDORA31_DOCKER_IMAGE, *FEDORA32_DOCKER_IMAGE, *FEDORA33_DOCKER_IMAGE, *CENTOS8_DOCKER_IMAGE, *CENTOS7_DOCKER_IMAGE]
+              target-image: [*FEDORA35_DOCKER_IMAGE, *FEDORA36_DOCKER_IMAGE, *FEDORA37_DOCKER_IMAGE, *CENTOS9_DOCKER_IMAGE, *CENTOS8_DOCKER_IMAGE, *CENTOS7_DOCKER_IMAGE]
           requires:
             - package-<< matrix.target-image >>
       - collect-packages:
