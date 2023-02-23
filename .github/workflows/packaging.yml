@@ -1,0 +1,127 @@
+name: hashicorp/vault-selinux-policies/packaging
+on:
+  workflow_dispatch:
+    inputs:
+      hc-product:
+        required: false
+        default: vault_selinux
+      hc-version:
+        required: false
+        default: 0.1.5
+      hc-package-iteration:
+        required: false
+        default: '1'
+jobs:
+  persist-ci-script:
+    runs-on: ubuntu-latest
+    container:
+      image: docker.mirror.hashicorp.services/circleci/buildpack-deps:bionic
+    env:
+      HC_PRODUCT: "${{ inputs.hc-product }}"
+      HC_VERSION: "${{ inputs.hc-version }}"
+      HC_PACKAGE_ITERATION: "${{ inputs.hc-package-iteration }}"
+      IMAGE_F31_SYSTEM: docker.mirror.hashicorp.services/fedora:31
+      IMAGE_F32_SYSTEM: docker.mirror.hashicorp.services/fedora:32
+      IMAGE_F33_SYSTEM: docker.mirror.hashicorp.services/fedora:33
+      IMAGE_CENTOS8_SYSTEM: docker.mirror.hashicorp.services/centos:8
+      IMAGE_CENTOS7_SYSTEM: docker.mirror.hashicorp.services/centos:7
+      IMAGE_APT_SYSTEM: docker.mirror.hashicorp.services/circleci/buildpack-deps:bionic
+    steps:
+    - uses: actions/checkout@v3.3.0
+    - uses: actions/upload-artifact@v3.1.1
+      with:
+        path: "./products/${{ inputs.hc-product }}/ci"
+  package:
+    runs-on: ubuntu-latest
+    container:
+      image: "${{ matrix.host-image }}"
+    needs:
+    - persist-ci-script
+    env:
+      HC_PRODUCT: "${{ inputs.hc-product }}"
+      HC_VERSION: "${{ inputs.hc-version }}"
+      HC_PACKAGE_ITERATION: "${{ inputs.hc-package-iteration }}"
+      IMAGE_F31_SYSTEM: docker.mirror.hashicorp.services/fedora:31
+      IMAGE_F32_SYSTEM: docker.mirror.hashicorp.services/fedora:32
+      IMAGE_F33_SYSTEM: docker.mirror.hashicorp.services/fedora:33
+      IMAGE_CENTOS8_SYSTEM: docker.mirror.hashicorp.services/centos:8
+      IMAGE_CENTOS7_SYSTEM: docker.mirror.hashicorp.services/centos:7
+      IMAGE_APT_SYSTEM: docker.mirror.hashicorp.services/circleci/buildpack-deps:bionic
+    strategy:
+      matrix:
+        host-image:
+        - docker.mirror.hashicorp.services/fedora:31
+        - docker.mirror.hashicorp.services/fedora:32
+        - docker.mirror.hashicorp.services/fedora:33
+        - docker.mirror.hashicorp.services/centos:8
+        - docker.mirror.hashicorp.services/centos:7
+    steps:
+    - uses: actions/checkout@v3.3.0
+    - run: dnf -y install make
+      if: "${{ matrix.host-image }} == 'docker.mirror.hashicorp.services/fedora:31'"
+    - run: dnf -y install make
+      if: "${{ matrix.host-image }} == 'docker.mirror.hashicorp.services/fedora:32'"
+    - run: dnf -y install make
+      if: "${{ matrix.host-image }} == 'docker.mirror.hashicorp.services/fedora:33'"
+    - run: yum -y install make
+      if: "${{ matrix.host-image }} == 'docker.mirror.hashicorp.services/centos:8'"
+    - run: yum -y install make
+      if: "${{ matrix.host-image }} == 'docker.mirror.hashicorp.services/centos:7'"
+    - name: Create linux packages
+      run: make package
+    - uses: actions/upload-artifact@v3.1.1
+      with:
+        path: "./products/${{ inputs.hc-product }}/*.rpm"
+  validate-packages:
+    runs-on: ubuntu-16.04
+    needs:
+    - package-<< matrix.target-image >>
+    env:
+      HC_PRODUCT: "${{ inputs.hc-product }}"
+      HC_VERSION: "${{ inputs.hc-version }}"
+      HC_PACKAGE_ITERATION: "${{ inputs.hc-package-iteration }}"
+      IMAGE_F31_SYSTEM: docker.mirror.hashicorp.services/fedora:31
+      IMAGE_F32_SYSTEM: docker.mirror.hashicorp.services/fedora:32
+      IMAGE_F33_SYSTEM: docker.mirror.hashicorp.services/fedora:33
+      IMAGE_CENTOS8_SYSTEM: docker.mirror.hashicorp.services/centos:8
+      IMAGE_CENTOS7_SYSTEM: docker.mirror.hashicorp.services/centos:7
+      IMAGE_APT_SYSTEM: docker.mirror.hashicorp.services/circleci/buildpack-deps:bionic
+    strategy:
+      matrix:
+        target-image:
+        - docker.mirror.hashicorp.services/fedora:31
+        - docker.mirror.hashicorp.services/fedora:32
+        - docker.mirror.hashicorp.services/fedora:33
+        - docker.mirror.hashicorp.services/centos:8
+        - docker.mirror.hashicorp.services/centos:7
+    steps:
+    - uses: actions/download-artifact@v3.0.1
+      with:
+        path: "."
+    - name: Validate packages
+      run: TARGET_IMAGE=${{ matrix.target-image }} ./products/${{ inputs.hc-product }}/ci/validate.sh
+  collect-packages:
+    runs-on: ubuntu-latest
+    container:
+      image: docker.mirror.hashicorp.services/circleci/buildpack-deps:bionic
+    needs:
+    - validate-packages
+    env:
+      HC_PRODUCT: "${{ inputs.hc-product }}"
+      HC_VERSION: "${{ inputs.hc-version }}"
+      HC_PACKAGE_ITERATION: "${{ inputs.hc-package-iteration }}"
+      IMAGE_F31_SYSTEM: docker.mirror.hashicorp.services/fedora:31
+      IMAGE_F32_SYSTEM: docker.mirror.hashicorp.services/fedora:32
+      IMAGE_F33_SYSTEM: docker.mirror.hashicorp.services/fedora:33
+      IMAGE_CENTOS8_SYSTEM: docker.mirror.hashicorp.services/centos:8
+      IMAGE_CENTOS7_SYSTEM: docker.mirror.hashicorp.services/centos:7
+      IMAGE_APT_SYSTEM: docker.mirror.hashicorp.services/circleci/buildpack-deps:bionic
+    steps:
+    - uses: actions/download-artifact@v3.0.1
+      with:
+        path: "."
+    - name: Copy rpms to /tmp/circle-artifacts
+      run: mkdir -p /tmp/circle-artifacts && cp products/${{ inputs.hc-product }}/*.rpm /tmp/circle-artifacts
+    - uses: actions/upload-artifact@v3.1.1
+      with:
+        path: "/tmp/circle-artifacts"
