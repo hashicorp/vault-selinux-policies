@@ -31,8 +31,8 @@ BuildArch: noarch
 %endif
 
 %if 0%{?el8}
-Requires: policycoreutils, libselinux-utils
-Requires(post): selinux-policy-targeted, policycoreutils
+Requires: policycoreutils, libselinux-utils,policycoreutils-python-utils
+Requires(post): selinux-policy-targeted, policycoreutils, policycoreutils-python-utils
 Requires(postun): policycoreutils
 BuildArch: noarch
 %endif
@@ -102,6 +102,9 @@ exit 0
 
 
 %changelog
+* Mon Nov 14 2022 Jan Prinsloo <jan.prinsloo@hashicorp.com> 0.1.6-1
+- Added policycoreutils-python-utils requirement for Centos8/RHEL8
+
 * Wed Jan 6 2021 Christian Frichot <cfrichot@hashicorp.com> 0.1.5-1
 - Simplified local-package Makefile target
 
