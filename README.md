@@ -12,7 +12,7 @@ It is _not_ recommended to run this in Production without extensive testing firs
 
 ## Overview
 
-This repo holds the raw SELinux policy files, the packaging scripts _and_ validation scripts to package and validate via CircleCI. 
+This repo holds the raw SELinux policy files, the packaging scripts _and_ validation scripts to package and validate via CircleCI.
 
 ### Caveats
 
