@@ -12,7 +12,7 @@ It is _not_ recommended to run this in Production without extensive testing firs
 
 ## Overview
 
-This repo holds the raw SELinux policy files, the packaging scripts _and_ validation scripts to package and validate via CircleCI.
+This repo holds the raw SELinux policy files, the packaging scripts _and_ validation scripts to package and validate via CircleCI. 
 
 ### Caveats
 
@@ -165,3 +165,9 @@ First, ensure you can `make up` and `make down` as above.
 Second, place a copy of the CentOS RPM into the `terraform` folder as `vault_selinux.rpm`.
 
 Then run `make integration` from within the `terraform` folder. This will spin up the cluster, as above, then interact with the instances, deploying the RPM, and ensuring that they can function.
+
+## Frequently Asked Questions
+
+**Can Vault ship an RPM with these SELinux policies baked in?**
+
+In short, it is not a good idea. Vault's SELinux images are not officially supported as-is; they require modification and customization to fit your particular operating environment. Creating RPMs would allow easier consumption, but our RPM repos are presently limited to only officially-supported packages. Additionally, RPM packaging wouldn't be ideal: direct modifications to the policy would result in conflicts which could overwrite any specific customization made by your organization. This may change based on customer feedback if most are happy using the packages as-is and contributing to them here.
