@@ -42,6 +42,7 @@ corenet_port(vault_cluster_port_t)
 
 require {
 	type vault_t;
+	type init_t;
 	type vault_conf_t;
 	type vault_sys_content_t;
 	type vault_log_t;
@@ -50,8 +51,8 @@ require {
 	class netlink_route_socket { bind create getattr nlmsg_read read write };
 	class tcp_socket { accept bind connect create getattr getopt listen setopt read write };
 	class unix_dgram_socket { bind create getattr setopt connect sendto };
-	class file { create getattr lock map open read write };
-	class dir { add_name create getattr open read write search };
+	class file { create getattr lock map open read write unlink rename };
+	class dir { add_name create getattr open read write search remove_name };
 }
 
 # read-write file permissions on anonymous pipes
@@ -138,10 +139,12 @@ corecmd_exec_bin(vault_t)
 ###  Allows caller to read system state information in /proc.
 kernel_read_system_state(vault_t)
 
+# Need to allow systemD access to read vault.env
+allow init_t vault_conf_t:file { read open };
 
 # Need to access data files
-allow vault_t vault_sys_content_t:dir { add_name create getattr open read write search };
-allow vault_t vault_sys_content_t:file { create getattr lock map open read write };
+allow vault_t vault_sys_content_t:dir { add_name create getattr open read write search remove_name };
+allow vault_t vault_sys_content_t:file { create getattr lock map open read write unlink rename };
 
 # Need to access log files
 allow vault_t vault_log_t:dir { getattr search write add_name };
@@ -149,6 +152,7 @@ allow vault_t vault_log_t:file { create append open setattr };
 
 # Needs this for logging
 logging_create_devlog_dev(vault_t)
+logging_send_syslog_msg(vault_t)
 
 ## <desc>
 ## <p>
